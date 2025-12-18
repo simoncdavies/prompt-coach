@@ -19,7 +19,7 @@ export function PromptEditor({ onSubmit, isLoading, initialPrompt = '', initialM
     const [outputStyle, setOutputStyle] = useState<PromptMetadata['outputStyle']>(initialMetadata?.outputStyle || 'plan + code + tests');
     const [verbosity, setVerbosity] = useState<PromptMetadata['verbosity']>(initialMetadata?.verbosity || 'normal');
 
-    const [isPublic, setIsPublic] = useState(false);
+    const [isPublic, setIsPublic] = useState(true);
 
     // Sync with external changes (e.g. from history)
     useEffect(() => {
