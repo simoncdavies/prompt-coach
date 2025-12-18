@@ -16,10 +16,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                 className={cn(
                     'inline-flex items-center justify-center rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none',
                     {
-                        'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500': variant === 'primary',
-                        'bg-slate-100 text-slate-900 hover:bg-slate-200 focus:ring-slate-500': variant === 'secondary',
-                        'border border-slate-200 hover:bg-slate-50': variant === 'outline',
-                        'hover:bg-slate-100 text-slate-700': variant === 'ghost',
+                        'bg-[#2BA84A] text-[#FCFFFC] hover:bg-[#248232] focus:ring-[#2BA84A]': variant === 'primary',
+                        'bg-[#248232] text-[#FCFFFC] hover:bg-[#1f6d2b] focus:ring-[#248232]': variant === 'secondary',
+                        'border border-[#2D3A3A]/40 text-[#040F0F] hover:bg-[#040F0F]/5 focus:ring-[#2D3A3A]': variant === 'outline',
+                        'text-[#2D3A3A] hover:bg-[#040F0F]/5 focus:ring-[#2D3A3A]/60': variant === 'ghost',
                         'h-8 px-3 text-sm': size === 'sm',
                         'h-10 px-4 py-2': size === 'md',
                         'h-12 px-6 text-lg': size === 'lg',

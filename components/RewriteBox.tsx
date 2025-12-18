@@ -21,15 +21,15 @@ export function RewriteBox({ result }: { result: RewriterResult }) {
 
     return (
         <Card className="flex flex-col h-full">
-            <CardHeader className="border-b border-slate-100">
+            <CardHeader className="border-b border-[#2D3A3A]/15">
                 <div className="flex items-center justify-between">
                     <CardTitle>Optimized Prompt</CardTitle>
-                    <div className="flex space-x-1 bg-slate-100 p-1 rounded-lg">
+                    <div className="flex space-x-1 bg-[#2D3A3A]/10 p-1 rounded-lg">
                         <button
                             onClick={() => setActiveTab('improved')}
                             className={cn(
                                 "px-3 py-1 text-xs font-medium rounded-md transition-all flex items-center gap-2",
-                                activeTab === 'improved' ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-900"
+                                activeTab === 'improved' ? "bg-[#FCFFFC] text-[#040F0F] shadow-sm" : "text-[#2D3A3A] hover:text-[#040F0F]"
                             )}
                         >
                             <FileText className="h-3 w-3" />
@@ -39,7 +39,7 @@ export function RewriteBox({ result }: { result: RewriterResult }) {
                             onClick={() => setActiveTab('minimal')}
                             className={cn(
                                 "px-3 py-1 text-xs font-medium rounded-md transition-all flex items-center gap-2",
-                                activeTab === 'minimal' ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-900"
+                                activeTab === 'minimal' ? "bg-[#FCFFFC] text-[#040F0F] shadow-sm" : "text-[#2D3A3A] hover:text-[#040F0F]"
                             )}
                         >
                             <Zap className="h-3 w-3" />
@@ -51,7 +51,7 @@ export function RewriteBox({ result }: { result: RewriterResult }) {
             <CardContent className="flex-1 p-0 relative group min-h-[400px]">
                 <textarea
                     readOnly
-                    className="w-full h-full p-6 resize-none outline-none font-mono text-sm bg-slate-50 text-slate-800"
+                    className="w-full h-full p-6 resize-none outline-none font-mono text-sm bg-[#FCFFFC] text-[#040F0F]"
                     value={content}
                 />
                 <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">

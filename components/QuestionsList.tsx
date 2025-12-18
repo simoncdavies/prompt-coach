@@ -8,12 +8,12 @@ export function QuestionsList({ questions }: { questions: string[] }) {
         <Card>
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                    <HelpCircle className="h-5 w-5 text-blue-500" />
+                    <HelpCircle className="h-5 w-5 text-[#2BA84A]" />
                     Clarifying Questions
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                <ul className="list-disc list-inside space-y-2 text-sm text-slate-700">
+                <ul className="list-disc list-inside space-y-2 text-sm text-[#2D3A3A]">
                     {questions.map((q, idx) => (
                         <li key={idx}>{q}</li>
                     ))}
