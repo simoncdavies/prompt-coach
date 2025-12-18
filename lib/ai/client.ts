@@ -11,8 +11,8 @@ const genAI = new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY,
 });
 
-// const MODEL_NAME = 'gemini-2.5-flash';
-const MODEL_NAME = 'gemini-2.0-flash'; // Using 2.0-flash for better availability/quota than 2.5 or 1.5 in this SDK
+// const MODEL_NAME = 'gemini-1.5-flash';
+const MODEL_NAME = 'gemini-3-flash-preview'; // Using Gemini 3 Flash to bypass the restricted 2.x quotas
 
 
 // Helper: Clean raw output if it contains markdown blocks
