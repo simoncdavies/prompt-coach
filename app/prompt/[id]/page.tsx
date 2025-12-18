@@ -5,7 +5,7 @@ import { ScoreCard } from '@/components/ScoreCard';
 import { QuestionsList } from '@/components/QuestionsList';
 import { RewriteBox } from '@/components/RewriteBox';
 import { RecentRuns } from '@/components/RecentRuns';
-import { Header } from '@/components/Header';
+import { HeaderSmall } from '@/components/HeaderSmall';
 import { RunResponse } from '@/lib/types';
 import { useRouter } from 'next/navigation';
 
@@ -44,7 +44,7 @@ export default function PromptView({ params }: { params: Promise<{ id: string }>
 
     return (
         <main className="min-h-screen bg-[#FCFFFC] pb-20">
-            <Header />
+            <HeaderSmall />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
                 {loading && (
