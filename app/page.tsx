@@ -1,65 +1,108 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from 'react';
+import { PromptEditor } from '@/components/PromptEditor';
+import { ScoreCard } from '@/components/ScoreCard';
+import { QuestionsList } from '@/components/QuestionsList';
+import { RewriteBox } from '@/components/RewriteBox';
+import { RecentRuns } from '@/components/RecentRuns';
+import { RunAnalysisRequest, RunResponse } from '@/lib/types';
+import { Code2, Github } from 'lucide-react';
 
 export default function Home() {
+  const [data, setData] = useState<RunResponse | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleRun = async (request: RunAnalysisRequest) => {
+    setLoading(true);
+    setError(null);
+    setData(null);
+
+    try {
+      const res = await fetch('/api/run', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(request),
+      });
+
+      const json = await res.json();
+      if (!res.ok) {
+        throw new Error(json.error || 'Something went wrong');
+      }
+
+      setData(json);
+      // Scroll to results
+      setTimeout(() => {
+        document.getElementById('results')?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="min-h-screen bg-slate-50 pb-20">
+      {/* Header */}
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="bg-blue-600 p-2 rounded-lg text-white">
+              <Code2 className="h-5 w-5" />
+            </div>
+            <h1 className="text-xl font-bold text-slate-900 tracking-tight">Prompt Coach <span className="text-slate-400 font-normal">for Coding</span></h1>
+          </div>
+          <div className="flex items-center gap-4">
+            <a href="https://github.com/google/generative-ai-js" target="_blank" className="text-slate-500 hover:text-slate-900 transition-colors">
+              <Github className="h-5 w-5" />
+            </a>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </header>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+        {/* Hero / Input */}
+        <section className="space-y-6 max-w-4xl mx-auto">
+          <div className="text-center space-y-2">
+            <h2 className="text-3xl font-bold text-slate-900">Refine your AI Coding Prompts</h2>
+            <p className="text-slate-600">Get better code from Claude, OpenAI, and Gemini by linting your prompt first.</p>
+          </div>
+
+          <PromptEditor onSubmit={handleRun} isLoading={loading} />
+
+          {error && (
+            <div className="p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm text-center">
+              Error: {error}
+            </div>
+          )}
+        </section>
+
+        {/* Results */}
+        {data && (
+          <section id="results" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 scroll-mt-24">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Left Column: Analysis */}
+              <div className="space-y-6">
+                <ScoreCard result={data.analysis} />
+                <QuestionsList questions={data.analysis.questions_to_ask} />
+              </div>
+
+              {/* Right Column: Rewrite */}
+              <div className="lg:col-span-2">
+                <RewriteBox result={data.rewrite} />
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Footer / Recent */}
+        <div className="border-t border-slate-200 pt-10">
+          <RecentRuns />
         </div>
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }

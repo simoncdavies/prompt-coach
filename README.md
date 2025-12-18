@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Prompt Coach (Coding)
+
+A Next.js web application that analyzes and improves AI coding prompts using Google Gemini.
+
+## Features
+
+- **Prompt Analysis**: Scores your prompt on clarity, context, constraints, and more.
+- **Smart Rewriter**: Automatically rewrites your prompt to be production-ready and generates a minimal concise version.
+- **Privacy First**: Secrets are redacted before processing. No prompts are stored unless explicitly saved.
+- **Public Library**: Option to save anonymized runs to a public gallery.
+
+## Tech Stack
+
+- **Framework**: Next.js 14+ (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **AI**: Google Gemini API (`gemini-1.5-flash`)
+- **Database**: Supabase (PostgreSQL)
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- A Google API Key (Gemini)
+- A Supabase Project
+
+### 1. Clone & Install
+
+```bash
+git clone <your-repo>
+cd prompt-coach
+npm install
+```
+
+### 2. Environment Setup
+
+Copy `.env.example` to `.env.local` and fill in your keys:
+
+```bash
+cp .env.example .env.local
+```
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your-sb-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-sb-anon-key
+GEMINI_API_KEY=your-gemini-key
+```
+
+### 3. Database Setup (Supabase)
+
+1. Go to your Supabase Dashboard -> SQL Editor.
+2. Run the content of `supabase/migrations/0000_init.sql`.
+   - This creates the `prompt_runs` table.
+   - Enables Row Level Security (RLS).
+   - Sets up public read access for `is_public=true`.
+
+### 4. Run Locally
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deployment (Vercel)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Push code to GitHub.
+2. Import project into Vercel.
+3. Add the Environment Variables from step 2 to Vercel Project Settings.
+4. Deploy!
 
-## Learn More
+## License
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT
