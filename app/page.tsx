@@ -34,8 +34,9 @@ export default function Home() {
         throw new Error("No run ID returned from API");
       }
 
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Something went wrong';
+      setError(message);
       setLoading(false);
     }
   };
@@ -46,15 +47,15 @@ export default function Home() {
 
 
   return (
-    <main className="min-h-screen bg-slate-50 pb-20">
+    <main className="min-h-screen bg-[#FCFFFC] pb-20">
       <Header />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
         {/* Hero / Input */}
         <section className="space-y-6 max-w-4xl mx-auto">
           <div className="text-center space-y-2">
-            <h2 className="text-3xl font-bold text-slate-900">Refine your AI Coding Prompts</h2>
-            <p className="text-slate-600">Get better code from Claude, OpenAI, and Gemini by linting your prompt first.</p>
+            <h2 className="text-3xl font-bold text-[#040F0F]">Refine your AI Coding Prompts</h2>
+            <p className="text-[#2D3A3A]">Get better code from Claude, OpenAI, and Gemini by linting your prompt first.</p>
           </div>
 
           <PromptEditor
@@ -71,7 +72,7 @@ export default function Home() {
         </section>
 
         {/* Footer / Recent */}
-        <div className="border-t border-slate-200 pt-10">
+        <div className="border-t border-[#2D3A3A]/20 pt-10">
           <RecentRuns onSelect={handleSelectRun} />
         </div>
       </div>

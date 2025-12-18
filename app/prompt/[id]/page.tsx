@@ -25,8 +25,9 @@ export default function PromptView({ params }: { params: Promise<{ id: string }>
                 const json = await res.json();
                 if (!res.ok) throw new Error(json.error || 'Failed to fetch run');
                 setData(json);
-            } catch (err: any) {
-                setError(err.message);
+            } catch (err: unknown) {
+                const message = err instanceof Error ? err.message : 'Failed to fetch run';
+                setError(message);
             } finally {
                 setLoading(false);
             }
@@ -42,13 +43,13 @@ export default function PromptView({ params }: { params: Promise<{ id: string }>
     };
 
     return (
-        <main className="min-h-screen bg-slate-50 pb-20">
+        <main className="min-h-screen bg-[#FCFFFC] pb-20">
             <Header />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
                 {loading && (
                     <div className="flex justify-center py-20">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2BA84A]"></div>
                     </div>
                 )}
 
@@ -61,10 +62,10 @@ export default function PromptView({ params }: { params: Promise<{ id: string }>
                 {data && !loading && (
                     <section id="results" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                         <div className="max-w-4xl mx-auto space-y-4">
-                            <h2 className="text-2xl font-bold text-slate-900">Analysis Results</h2>
-                            <div className="p-6 rounded-xl bg-white border border-slate-200 shadow-sm space-y-2">
-                                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Original Prompt</label>
-                                <p className="text-slate-700 font-mono text-sm whitespace-pre-wrap">{data.prompt_original}</p>
+                            <h2 className="text-2xl font-bold text-[#040F0F]">Analysis Results</h2>
+                            <div className="p-6 rounded-xl bg-[#FCFFFC] border border-[#2D3A3A]/20 shadow-sm space-y-2">
+                                <label className="text-xs font-semibold text-[#2D3A3A] uppercase tracking-wider">Original Prompt</label>
+                                <p className="text-[#2D3A3A] font-mono text-sm whitespace-pre-wrap">{data.prompt_original}</p>
                             </div>
                         </div>
 
@@ -84,7 +85,7 @@ export default function PromptView({ params }: { params: Promise<{ id: string }>
                 )}
 
                 {/* Footer / Recent */}
-                <div className="border-t border-slate-200 pt-10">
+                <div className="border-t border-[#2D3A3A]/20 pt-10">
                     <RecentRuns onSelect={handleSelectRun} />
                 </div>
             </div>

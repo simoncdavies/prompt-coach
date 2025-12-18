@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { RunAnalysisSchema, RunAnalysisRequest, RunResponse } from '@/lib/types';
+import { RunAnalysisSchema, RunResponse } from '@/lib/types';
 import { redactSecrets } from '@/lib/utils';
 import { analyzePromptAI, rewritePromptAI } from '@/lib/ai/client';
 import { supabase } from '@/lib/supabase/client';
@@ -68,10 +68,11 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json(response);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("API Error:", error);
+        const message = error instanceof Error ? error.message : 'Internal Server Error';
         return NextResponse.json(
-            { error: error.message || 'Internal Server Error' },
+            { error: message },
             { status: 500 }
         );
     }

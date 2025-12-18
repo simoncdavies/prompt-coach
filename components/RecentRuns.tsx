@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/Card';
-import { AnalyzerResult, PromptMetadata } from '@/lib/types'; // Assuming types structure
+import { Card, CardContent, CardHeader } from './ui/Card';
+import { PromptMetadata } from '@/lib/types'; // Assuming types structure
 import { Badge } from './ui/Badge';
 
 interface RecentRun {
@@ -47,12 +47,12 @@ export function RecentRuns({ onSelect }: RecentRunsProps) {
 
     return (
         <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wide">Recent Prompts</h3>
+            <h3 className="text-sm font-semibold text-[#2D3A3A] uppercase tracking-wide">Recent Prompts</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {runs.map(run => (
                     <Card
                         key={run.id}
-                        className="hover:shadow-md transition-all cursor-pointer border-slate-200 hover:border-blue-300 group"
+                        className="hover:shadow-md transition-all cursor-pointer border-[#2D3A3A]/20 hover:border-[#2BA84A] group"
                         onClick={() => onSelect(run.id)}
                     >
                         <CardHeader className="pb-2">
@@ -60,18 +60,18 @@ export function RecentRuns({ onSelect }: RecentRunsProps) {
                                 <Badge variant={run.overall_score >= 8 ? 'success' : run.overall_score >= 5 ? 'warning' : 'destructive'}>
                                     Score: {run.overall_score}/10
                                 </Badge>
-                                <span className="text-xs text-slate-400">
+                                <span className="text-xs text-[#2D3A3A]/70">
                                     {new Date(run.created_at).toLocaleDateString()}
                                 </span>
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <p className="text-sm text-slate-600 line-clamp-3 font-mono text-xs mb-2">
+                            <p className="text-sm text-[#2D3A3A] line-clamp-3 font-mono text-xs mb-2">
                                 {run.prompt_original}
                             </p>
                             <div className="flex justify-between items-center">
                                 <Badge variant="outline" className="text-[10px]">{run.metadata.targetModel}</Badge>
-                                <span className="text-[10px] text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity font-medium">Click to view →</span>
+                                <span className="text-[10px] text-[#2BA84A] opacity-0 group-hover:opacity-100 transition-opacity font-medium">Click to view →</span>
                             </div>
                         </CardContent>
                     </Card>

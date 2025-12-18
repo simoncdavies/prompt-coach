@@ -22,8 +22,8 @@ function parseJSON(text: string | null | undefined) {
         // Remove markdown code blocks if present
         const clean = text.replace(/```json/g, '').replace(/```/g, '').trim();
         return JSON.parse(clean);
-    } catch (e) {
-        console.error("JSON Parse Error on text:", text);
+    } catch (error) {
+        console.error("JSON Parse Error on text:", text, error);
         throw new Error('Failed to parse AI response as JSON');
     }
 }
