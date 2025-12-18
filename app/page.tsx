@@ -44,6 +44,25 @@ export default function Home() {
     }
   };
 
+  const handleSelectRun = async (id: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/run/${id}`);
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Failed to fetch run');
+      setData(json);
+      setTimeout(() => {
+        document.getElementById('results')?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   return (
     <main className="min-h-screen bg-slate-50 pb-20">
       {/* Header */}
@@ -71,7 +90,13 @@ export default function Home() {
             <p className="text-slate-600">Get better code from Claude, OpenAI, and Gemini by linting your prompt first.</p>
           </div>
 
-          <PromptEditor onSubmit={handleRun} isLoading={loading} />
+          <PromptEditor
+            onSubmit={handleRun}
+            isLoading={loading}
+            initialPrompt={data?.prompt_original}
+            initialMetadata={data?.metadata}
+          />
+
 
           {error && (
             <div className="p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm text-center">
@@ -100,9 +125,10 @@ export default function Home() {
 
         {/* Footer / Recent */}
         <div className="border-t border-slate-200 pt-10">
-          <RecentRuns />
+          <RecentRuns onSelect={handleSelectRun} />
         </div>
       </div>
     </main>
   );
 }
+

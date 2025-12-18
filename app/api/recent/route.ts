@@ -8,7 +8,7 @@ export async function GET() {
         const { data, error } = await supabase
             .from('prompt_runs')
             .select('id, created_at, overall_score, metadata, prompt_original') // Minimal fields
-            .eq('is_public', true)
+
             .order('created_at', { ascending: false })
             .limit(10);
 

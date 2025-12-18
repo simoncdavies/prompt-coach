@@ -13,12 +13,13 @@ create table if not exists "public"."prompt_runs" (
 -- Enable RLS
 alter table "public"."prompt_runs" enable row level security;
 
--- Policy: Allow reading public runs for everyone
-create policy "Enable read access for public runs"
+-- Policy: Allow reading all runs for everyone
+create policy "Enable read access for all runs"
 on "public"."prompt_runs"
 for select
 to public
-using (is_public = true);
+using (true);
+
 
 -- Policy: Allow insert for everyone (anon)
 create policy "Enable insert for everyone"

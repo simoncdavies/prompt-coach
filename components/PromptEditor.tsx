@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { PromptMetadata, RunAnalysisRequest, TARGET_MODELS, OUTPUT_STYLES, VERBOSITY_LEVELS } from '@/lib/types';
 import { Card, CardContent } from './ui/Card';
 import { Button } from './ui/Button';
@@ -9,15 +9,26 @@ import { Wand2 } from 'lucide-react';
 interface PromptEditorProps {
     onSubmit: (data: RunAnalysisRequest) => void;
     isLoading: boolean;
+    initialPrompt?: string;
+    initialMetadata?: Partial<PromptMetadata>;
 }
 
-export function PromptEditor({ onSubmit, isLoading }: PromptEditorProps) {
-    const [prompt, setPrompt] = useState('');
-    const [targetModel, setTargetModel] = useState<PromptMetadata['targetModel']>('Gemini');
-    const [outputStyle, setOutputStyle] = useState<PromptMetadata['outputStyle']>('plan + code + tests');
-    const [verbosity, setVerbosity] = useState<PromptMetadata['verbosity']>('normal');
-    const [save, setSave] = useState(false);
+export function PromptEditor({ onSubmit, isLoading, initialPrompt = '', initialMetadata }: PromptEditorProps) {
+    const [prompt, setPrompt] = useState(initialPrompt);
+    const [targetModel, setTargetModel] = useState<PromptMetadata['targetModel']>(initialMetadata?.targetModel || 'Gemini');
+    const [outputStyle, setOutputStyle] = useState<PromptMetadata['outputStyle']>(initialMetadata?.outputStyle || 'plan + code + tests');
+    const [verbosity, setVerbosity] = useState<PromptMetadata['verbosity']>(initialMetadata?.verbosity || 'normal');
+
     const [isPublic, setIsPublic] = useState(false);
+
+    // Sync with external changes (e.g. from history)
+    useEffect(() => {
+        if (initialPrompt) setPrompt(initialPrompt);
+        if (initialMetadata?.targetModel) setTargetModel(initialMetadata.targetModel);
+        if (initialMetadata?.outputStyle) setOutputStyle(initialMetadata.outputStyle);
+        if (initialMetadata?.verbosity) setVerbosity(initialMetadata.verbosity);
+    }, [initialPrompt, initialMetadata]);
+
 
     // Validation
     const isValid = prompt.length >= 10;
@@ -27,8 +38,8 @@ export function PromptEditor({ onSubmit, isLoading }: PromptEditorProps) {
         onSubmit({
             prompt,
             metadata: { targetModel, outputStyle, verbosity },
-            save,
-            isPublic: save ? isPublic : false, // Only public if saved
+            save: true,
+            isPublic: isPublic,
         });
     };
 
@@ -94,25 +105,12 @@ export function PromptEditor({ onSubmit, isLoading }: PromptEditorProps) {
                             <input
                                 type="checkbox"
                                 className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                checked={save}
-                                onChange={(e) => setSave(e.target.checked)}
+                                checked={isPublic}
+                                onChange={(e) => setIsPublic(e.target.checked)}
                                 disabled={isLoading}
                             />
-                            <span className="text-sm text-slate-700">Save Run</span>
+                            <span className="text-sm text-slate-700">Make Public (Anon)</span>
                         </label>
-
-                        {save && (
-                            <label className="flex items-center space-x-2 cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                    checked={isPublic}
-                                    onChange={(e) => setIsPublic(e.target.checked)}
-                                    disabled={isLoading}
-                                />
-                                <span className="text-sm text-slate-700">Make Public (Anon)</span>
-                            </label>
-                        )}
                     </div>
 
                     <Button onClick={handleSubmit} disabled={!isValid || isLoading} size="lg">

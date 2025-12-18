@@ -31,8 +31,9 @@ export async function POST(req: NextRequest) {
 
         let runId: string | undefined;
 
-        // 5. Database Persistence (Optional)
+        // 5. Database Persistence
         if (save) {
+            console.log("Attempting to save run to Supabase...");
             const { data, error } = await supabase
                 .from('prompt_runs')
                 .insert({
@@ -43,14 +44,15 @@ export async function POST(req: NextRequest) {
                     metadata: metadata,
                     is_public: isPublic
                 })
-                .select('id')
-                .single();
+                .select('id'); // Removed .single() to avoid error if RLS hides the row
 
             if (error) {
-                console.error("Supabase Save Error:", error);
-                // We don't fail the request, just log it.
+                console.error("Supabase Save Error:", error.message, error.details);
+            } else if (data && data.length > 0) {
+                runId = data[0].id;
+                console.log("Saved run with ID:", runId);
             } else {
-                runId = data?.id;
+                console.log("Run saved but ID not returned (likely RLS policy).");
             }
         }
 
@@ -58,8 +60,11 @@ export async function POST(req: NextRequest) {
         const response: RunResponse = {
             analysis,
             rewrite,
-            runId
+            runId,
+            prompt_original: safePrompt,
+            metadata: metadata
         };
+
 
         return NextResponse.json(response);
 

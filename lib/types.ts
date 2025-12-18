@@ -79,7 +79,10 @@ export interface RunResponse {
   rewrite: RewriterResult;
   runId?: string;
   error?: string;
+  prompt_original?: string;
+  metadata?: PromptMetadata;
 }
+
 
 // --- Database Row Interface (Supabase) ---
 export interface PromptRunRow {
