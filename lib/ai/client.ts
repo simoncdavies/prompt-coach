@@ -11,7 +11,9 @@ const genAI = new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY,
 });
 
-const MODEL_NAME = 'gemini-2.5-flash'; // Using latest flash-exp or 1.5-flash
+// const MODEL_NAME = 'gemini-2.5-flash';
+const MODEL_NAME = 'gemini-2.0-flash'; // Using 2.0-flash for better availability/quota than 2.5 or 1.5 in this SDK
+
 
 // Helper: Clean raw output if it contains markdown blocks
 function parseJSON(text: string | null | undefined) {
