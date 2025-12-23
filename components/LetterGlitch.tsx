@@ -183,7 +183,7 @@ const LetterGlitch = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [glitchSpeed, smooth]);
     return (
-        <div className={`relative w-full h-full bg-background overflow-hidden ${className}`}>
+        <div className={`relative w-full h-full bg-foreground overflow-hidden ${className}`}>
             <canvas ref={canvasRef} className="block w-full h-full" />
             {outerVignette && (
                 <div className="absolute top-0 left-0 w-full h-full pointer-events-none bg-[radial-gradient(circle,_rgba(0,0,0,0)_60%,_rgba(0,0,0,1)_100%)]"></div>

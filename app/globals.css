@@ -22,7 +22,17 @@
   --color-bright-green: var(--color-bright-green);
   --color-mid-dark-grey: var(--color-mid-dark-grey);
   --color-off-white: var(--color-off-white);
+
+  /* Aliases for brand colors */
+  --color-brand-dark: var(--color-primary-dark);
+  --color-brand-secondary: var(--color-bright-green);
+  --color-secondary: var(--color-bright-green);
 }
+
+.brand-name-secondary {
+  @apply text-bright-green font-bold;
+}
+
 
 body {
   background: var(--background);

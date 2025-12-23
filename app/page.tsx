@@ -6,6 +6,7 @@ import { RecentRuns } from '@/components/RecentRuns';
 import { HeaderSmall } from '@/components/HeaderSmall';
 import { RunAnalysisRequest } from '@/lib/types';
 import { useRouter } from 'next/navigation';
+import { Footer } from '@/components/Footer';
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
@@ -47,7 +48,7 @@ export default function Home() {
 
 
   return (
-    <main className="min-h-screen bg-[#FCFFFC] pb-20">
+    <main className="min-h-screen bg-[#FCFFFC]">
       <HeaderSmall />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
@@ -76,6 +77,8 @@ export default function Home() {
           <RecentRuns onSelect={handleSelectRun} />
         </div>
       </div>
+
+      <Footer />
     </main>
   );
 }
