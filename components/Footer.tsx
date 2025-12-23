@@ -6,7 +6,7 @@ export function Footer() {
     return (
         <footer className="relative mt-20 border-t border-bright-green/10 bg-primary-dark pt-16 pb-12 overflow-hidden">
             {/* Decorative background element */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-bright-green/50 to-transparent" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-px bg-linear-to-r from-transparent via-bright-green/50 to-transparent" />
 
             <div className="max-w-7xl mx-auto px-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">

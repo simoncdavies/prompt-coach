@@ -30,7 +30,7 @@ A Next.js web application that analyzes and improves AI coding prompts using Goo
 ```bash
 git clone <your-repo>
 cd prompt-coach
-npm install
+pnpm install
 ```
 
 ### 2. Environment Setup
@@ -58,7 +58,7 @@ GEMINI_API_KEY=your-gemini-key
 ### 4. Run Locally
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
