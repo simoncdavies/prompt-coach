@@ -91,6 +91,7 @@ export interface PromptRunRow {
   prompt_original: string;
   analysis_json: AnalyzerResult;
   prompt_rewritten: string;
+  prompt_rewritten_minimal: string;
   overall_score: number;
   metadata: PromptMetadata;
   is_public: boolean;

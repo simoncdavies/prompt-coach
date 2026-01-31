@@ -40,6 +40,7 @@ export async function POST(req: NextRequest) {
                     prompt_original: safePrompt,
                     analysis_json: analysis,
                     prompt_rewritten: rewrite.revised_prompt,
+                    prompt_rewritten_minimal: rewrite.minimal_prompt,
                     overall_score: analysis.overall_score,
                     metadata: metadata,
                     is_public: isPublic

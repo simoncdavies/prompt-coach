@@ -32,7 +32,7 @@ export async function GET(
             analysis: data.analysis_json,
             rewrite: {
                 revised_prompt: data.prompt_rewritten,
-                minimal_prompt: '',
+                minimal_prompt: data.prompt_rewritten_minimal,
             },
             runId: data.id,
             prompt_original: data.prompt_original,
