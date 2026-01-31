@@ -37,6 +37,7 @@ Guidelines:
 - Add "Context" section
 - Add "Requirements/Constraints" section
 - Add "Output Format" section
+- Ensure the prompt requests the latest stable versions of relevant software/frameworks unless the user specifies otherwise.
 - If information is missing, use placeholders like [INSERT FILE CONTENT HERE] or <TODO: Paste Types>.
 
 Also provide a "Minimal" version: a dense, token-efficient version for copy-pasting into chat interfaces like ChatGPT/Claude Web UI where context window might be loose but brevity is preferred.
