@@ -8,6 +8,7 @@ import { RecentRuns } from '@/components/RecentRuns';
 import { HeaderSmall } from '@/components/HeaderSmall';
 import { RunResponse } from '@/lib/types';
 import { useRouter } from 'next/navigation';
+import { LoadingModal } from '@/components/LoadingModal';
 
 export default function PromptView({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
@@ -45,14 +46,9 @@ export default function PromptView({ params }: { params: Promise<{ id: string }>
     return (
         <main className="min-h-screen bg-[#FCFFFC] pb-20">
             <HeaderSmall />
+            {loading && <LoadingModal message="Fetching analysis results..." />}
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
-                {loading && (
-                    <div className="flex justify-center py-20">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2BA84A]"></div>
-                    </div>
-                )}
-
                 {error && (
                     <div className="max-w-4xl mx-auto p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm text-center">
                         Error: {error}
