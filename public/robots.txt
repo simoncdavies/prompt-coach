@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://prompt.dvlpr.co.uk/sitemap.xml

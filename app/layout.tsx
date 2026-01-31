@@ -15,6 +15,7 @@ const robotoMono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://prompt.dvlpr.co.uk"),
   title: {
     default: "Prompt Coach | Refine AI Coding Prompts",
     template: "%s | Prompt Coach",
@@ -36,6 +37,24 @@ export const metadata: Metadata = {
   authors: [{ name: "Prompt Coach" }],
   creator: "Prompt Coach",
   publisher: "Prompt Coach",
+  manifest: "/manifest.webmanifest",
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+    other: [
+      {
+        rel: "mask-icon",
+        url: "/favicon.svg",
+        color: "#2ba84a",
+      },
+    ],
+  },
   alternates: {
     canonical: "/",
   },
@@ -47,12 +66,21 @@ export const metadata: Metadata = {
     siteName: "Prompt Coach",
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "Prompt Coach - Refine AI coding prompts",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Prompt Coach | Refine AI Coding Prompts",
     description:
       "Improve AI coding responses by linting your prompts for Claude, OpenAI, and Gemini.",
+    images: ["/og.png"],
   },
   robots: {
     index: true,

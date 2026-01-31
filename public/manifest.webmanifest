@@ -1,0 +1,23 @@
+{
+  "name": "Prompt Coach | Refine AI Coding Prompts",
+  "short_name": "Prompt Coach by DVLPR",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#040f0f",
+  "theme_color": "#2ba84a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
