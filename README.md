@@ -44,6 +44,7 @@ cp .env.example .env.local
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your-sb-url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-sb-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-sb-service-role-key
 GEMINI_API_KEY=your-gemini-key
 ```
 

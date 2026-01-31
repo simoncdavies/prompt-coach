@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase/client';
+import { supabaseServer } from '@/lib/supabase/server';
 import { RunResponse } from '@/lib/types';
 
 export async function GET(
@@ -14,7 +14,7 @@ export async function GET(
             return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
         }
 
-        const { data, error } = await supabase
+        const { data, error } = await supabaseServer
             .from('prompt_runs')
             .select('*')
             .eq('id', id)

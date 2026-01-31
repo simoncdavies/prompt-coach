@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { RunAnalysisSchema, RunResponse } from '@/lib/types';
 import { redactSecrets } from '@/lib/utils';
 import { analyzePromptAI, rewritePromptAI } from '@/lib/ai/client';
-import { supabase } from '@/lib/supabase/client';
+import { supabaseServer } from '@/lib/supabase/server';
 
 export const maxDuration = 60; // Allow 60s for AI ops
 
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
         // 5. Database Persistence
         if (save) {
             console.log("Attempting to save run to Supabase...");
-            const { data, error } = await supabase
+            const { data, error } = await supabaseServer
                 .from('prompt_runs')
                 .insert({
                     prompt_original: safePrompt,
