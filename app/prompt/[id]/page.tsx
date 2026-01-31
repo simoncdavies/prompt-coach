@@ -9,6 +9,7 @@ import { HeaderSmall } from '@/components/HeaderSmall';
 import { RunResponse } from '@/lib/types';
 import { useRouter } from 'next/navigation';
 import { LoadingModal } from '@/components/LoadingModal';
+import { Footer } from '@/components/Footer';
 
 export default function PromptView({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
@@ -44,7 +45,7 @@ export default function PromptView({ params }: { params: Promise<{ id: string }>
     };
 
     return (
-        <main className="min-h-screen bg-[#FCFFFC] pb-20">
+        <main className="min-h-screen bg-[#FCFFFC]">
             <HeaderSmall />
             {loading && <LoadingModal message="Fetching analysis results..." />}
 
@@ -85,6 +86,8 @@ export default function PromptView({ params }: { params: Promise<{ id: string }>
                     <RecentRuns onSelect={handleSelectRun} />
                 </div>
             </div>
+
+            <Footer />
         </main>
     );
 }

@@ -66,7 +66,7 @@ export function RecentRuns({ onSelect }: RecentRunsProps) {
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <p className="text-sm text-[#2D3A3A] line-clamp-3 font-mono text-xs mb-2">
+                            <p className="text-xs text-[#2D3A3A] line-clamp-3 font-mono mb-2">
                                 {run.prompt_original}
                             </p>
                             <div className="flex justify-between items-center">
