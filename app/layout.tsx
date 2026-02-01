@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Roboto_Mono } from "next/font/google";
+import { GoogleAnalytics } from "@/components/analytics/google-analytics";
 import "../styles/globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -98,6 +99,7 @@ export default function RootLayout({
       <body
         className={`${spaceGrotesk.variable} ${robotoMono.variable} antialiased`}
       >
+        <GoogleAnalytics />
         {children}
       </body>
     </html>
