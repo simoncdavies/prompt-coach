@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabase/server';
 import { RunResponse } from '@/lib/types';
+import { getUserFromRequest } from '@/lib/server/auth';
 
 export async function GET(
     req: NextRequest,
@@ -8,7 +9,7 @@ export async function GET(
 ) {
     try {
         const { id } = await props.params;
-        console.log("Fetching run with ID:", id);
+        const authUser = await getUserFromRequest(req);
 
         if (!id || id === 'undefined') {
             return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
@@ -26,6 +27,30 @@ export async function GET(
 
         if (!data) {
             return NextResponse.json({ error: 'Run not found' }, { status: 404 });
+        }
+
+        const isOwner = authUser?.id && data.user_id === authUser.id;
+
+        if (!isOwner) {
+            if (!data.is_public) {
+                return NextResponse.json({ error: 'Run not found' }, { status: 404 });
+            }
+
+            const { data: recentRows, error: recentError } = await supabaseServer
+                .from('prompt_runs')
+                .select('id')
+                .eq('is_public', true)
+                .order('created_at', { ascending: false })
+                .limit(20);
+
+            if (recentError) {
+                throw recentError;
+            }
+
+            const isInRecent = (recentRows ?? []).some((row) => row.id === id);
+            if (!isInRecent) {
+                return NextResponse.json({ error: 'Run not found' }, { status: 404 });
+            }
         }
 
         const response: RunResponse = {

@@ -10,6 +10,7 @@ import { RunResponse } from '@/lib/types';
 import { useRouter } from 'next/navigation';
 import { LoadingModal } from '@/components/LoadingModal';
 import { Footer } from '@/components/Footer';
+import { getAccessToken, getAuthHeaders } from '@/lib/auth/client';
 
 export default function PromptView({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
@@ -23,7 +24,10 @@ export default function PromptView({ params }: { params: Promise<{ id: string }>
             setLoading(true);
             setError(null);
             try {
-                const res = await fetch(`/api/run/${id}`);
+                const token = await getAccessToken();
+                const res = await fetch(`/api/run/${id}`, {
+                    headers: token ? await getAuthHeaders() : undefined
+                });
                 const json = await res.json();
                 if (!res.ok) throw new Error(json.error || 'Failed to fetch run');
                 setData(json);
