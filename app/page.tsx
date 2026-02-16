@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import { Footer } from '@/components/Footer';
 import { LoadingModal } from '@/components/LoadingModal';
 import { AuthModal } from '@/components/AuthModal';
-import { getAccessToken, getAuthHeaders, getCurrentUser, onAuthChange } from '@/lib/auth/client';
+import { ClientAuthUser, getAccessToken, getAuthHeaders, getCurrentUser, onAuthChange } from '@/lib/auth/client';
 import { trackEvent } from '@/lib/analytics';
 
 export default function Home() {
@@ -21,8 +21,8 @@ export default function Home() {
   const [pendingRequest, setPendingRequest] = useState<RunAnalysisRequest | null>(null);
   const router = useRouter();
 
-  const fetchQuota = async () => {
-    const user = await getCurrentUser();
+  const fetchQuota = async (authUser?: ClientAuthUser | null) => {
+    const user = authUser ?? await getCurrentUser();
     if (!user) {
       setQuota(null);
       setIsSignedIn(false);
@@ -45,9 +45,8 @@ export default function Home() {
   };
 
   useEffect(() => {
-    fetchQuota();
-    const unsubscribe = onAuthChange(() => {
-      fetchQuota();
+    const unsubscribe = onAuthChange((user) => {
+      fetchQuota(user);
     });
 
     return unsubscribe;

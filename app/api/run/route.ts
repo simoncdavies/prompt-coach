@@ -27,24 +27,14 @@ export async function POST(req: NextRequest) {
         }
         const { prompt, metadata, save, isPublic } = parsed.data;
 
-        const isFakeUser = authUser.id === 'fake-user-local';
-        const quota = isFakeUser
-            ? {
-                allowed: true,
-                is_unlimited: true,
-                used: 0,
-                limit: 5,
-                remaining: null,
-                reset_at: new Date().toISOString(),
-            }
-            : await consumeQuota(authUser.id, {
-                route: '/api/run',
-                save,
-                isPublic,
-                targetModel: metadata.targetModel,
-                outputStyle: metadata.outputStyle,
-                verbosity: metadata.verbosity,
-            });
+        const quota = await consumeQuota(authUser.id, {
+            route: '/api/run',
+            save,
+            isPublic,
+            targetModel: metadata.targetModel,
+            outputStyle: metadata.outputStyle,
+            verbosity: metadata.verbosity,
+        });
 
         if (!quota.allowed) {
             return NextResponse.json(
@@ -76,7 +66,7 @@ export async function POST(req: NextRequest) {
             const { data, error } = await supabaseServer
                 .from('prompt_runs')
                 .insert({
-                    user_id: isFakeUser ? null : authUser.id,
+                    user_id: authUser.id,
                     prompt_original: safePrompt,
                     analysis_json: analysis,
                     prompt_rewritten: rewrite.revised_prompt,

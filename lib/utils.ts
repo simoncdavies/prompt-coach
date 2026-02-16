@@ -5,6 +5,18 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
+export function formatDateUTC(isoDate: string): string {
+    const d = new Date(isoDate);
+    if (Number.isNaN(d.getTime())) {
+        return '';
+    }
+
+    const year = d.getUTCFullYear();
+    const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(d.getUTCDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
 // Basic regex for common API key patterns (OpenAI, GitHub, Stripeish, generics)
 // This is not exhaustive but catches obvious slips.
 export function redactSecrets(text: string): string {

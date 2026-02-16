@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { LetterGlitch } from "./LetterGlitch";
 import { Code2, Menu, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { getCurrentUser, onAuthChange, signOut } from "@/lib/auth/client";
+import { onAuthChange, signOut } from "@/lib/auth/client";
 
 const HeaderSmall = () => {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -13,7 +13,6 @@ const HeaderSmall = () => {
     const router = useRouter();
 
     useEffect(() => {
-        getCurrentUser().then((user) => setUserEmail(user?.email ?? null));
         const unsubscribe = onAuthChange((user) => setUserEmail(user?.email ?? null));
         return unsubscribe;
     }, []);
