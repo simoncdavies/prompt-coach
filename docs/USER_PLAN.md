@@ -65,11 +65,22 @@
    - On the dedicated search page, return results in paginated batches of 20.
    - Include a checkbox to show only the signed-in user's prompts.
 
-9. **Analytics and auditing**
+9. **Navigation (global burger menu)**
+   - Use a standard burger menu icon on all screen sizes (desktop and mobile).
+   - The same icon should toggle open/close state for the primary navigation panel.
+   - Menu items for phase 1:
+     - Recent Prompts
+     - Enhancer
+     - Search (authenticated only)
+     - Login/Register (signed-out only)
+     - Account/Logout (signed-in only)
+   - Ensure keyboard and screen-reader accessibility (`aria-label`, focus management, and clear open/close state).
+
+10. **Analytics and auditing**
    - Log enhancement attempts (allowed/blocked) for visibility.
    - Track conversion: unauthenticated users who register after hitting enhancer gate.
 
-10. **Testing plan**
+11. **Testing plan**
    - Unauthenticated user can view recent prompts + details.
    - Unauthenticated recent prompt list is capped at 20.
    - Unauthenticated user is blocked from enhancer and prompted to log in/register.
@@ -79,8 +90,11 @@
    - Authenticated user can access dedicated search and retrieve beyond the 20-item recent cap.
    - Search page pagination returns 20 items per batch and supports loading additional pages.
    - "Only my prompts" checkbox correctly limits results to the signed-in user's prompts.
+   - Burger menu icon is visible on all pages and all viewport sizes.
+   - Burger menu opens/closes correctly via mouse, touch, and keyboard.
+   - Menu items switch correctly by auth state (Search/Login/Register/Account/Logout).
 
-11. **Monetization and upsell (design + data hooks)**
+12. **Monetization and upsell (design + data hooks)**
     - Define free tier as 5 enhancements/month.
     - Provisional paid tiers: £10 for 200 enhancements/month; £20 for 500 enhancements/month.
     - Decide on purchase flow and billing provider (Stripe recommended if not already).
@@ -91,7 +105,7 @@
     - Track conversion and drop-offs on the quota-block screen.
     - Support “power users” who are unrestricted (e.g., admin flag or allowlist).
 
-12. **Rollout considerations**
+13. **Rollout considerations**
    - Migrate existing users with no changes to their access except limit enforcement.
    - Add a short release note or tooltip explaining the new monthly limit.
 
