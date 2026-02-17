@@ -51,6 +51,14 @@
   - [ ] Decide coexistence/migration path from current ESLint setup
   - [ ] Run BiomeJS and fix or suppress baseline issues
   - [ ] Add CI step for BiomeJS checks
+- [ ] 15. Expand beyond coding prompts (category selector)
+  - [ ] Add `category` to prompt metadata schema/types/API payloads
+  - [ ] Add category selector UI in prompt editor (default: `coding`)
+  - [ ] Add category-specific analyzer/rewriter system prompt templates
+  - [ ] Keep shared core rubric + category-specific evaluation criteria
+  - [ ] Persist category in `prompt_runs.metadata` for analytics/search
+  - [ ] Keep auth/quota behavior unchanged across categories for phase 1
+  - [ ] Add tests for category routing + default fallback behavior
 
 ## Plan
 1. **Priority first step: auth + 5/month enforcement**

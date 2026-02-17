@@ -33,3 +33,35 @@
 ## Analytics
 - Track view → fork conversion.
 - Track fork reuse (forked prompts used/enhanced again).
+
+## Phase 2: Platform Hardening
+
+### Observability & Ops
+- Add error monitoring (API + client) with alerting.
+- Add structured logs for auth/quota/search failures with request IDs.
+- Add uptime checks for critical endpoints (`/api/run`, `/api/usage`, `/api/search`).
+
+### Performance
+- Define p95 latency targets for enhancer and search endpoints.
+- Add endpoint caching strategy (where safe) and document invalidation.
+- Add a lightweight dashboard for latency/error trends.
+
+### Data Lifecycle & Compliance
+- Define retention windows for prompt/audit data.
+- Add user data export/delete workflow.
+- Add scheduled cleanup job(s) for aged audit rows.
+
+### Security Hardening
+- Add concrete endpoint rate-limit policies and thresholds.
+- Add bot protection policy for public surfaces.
+- Add CI secret-scanning guardrails.
+
+### Release Governance
+- Add staged rollout checklist (`dev -> staging -> prod`).
+- Add rollback playbook for auth/migration regressions.
+- Add post-release smoke-check checklist.
+
+### Developer Experience
+- Add PR checklist mapped to roadmap items.
+- Add migration validation checklist (RLS, grants, smoke queries).
+- Add CI quality gates (`lint`, tests, migration checks).
