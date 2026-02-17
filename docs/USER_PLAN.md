@@ -45,6 +45,12 @@
 - [ ] 13. Rollout completion
   - Implemented: migrations for existing users and access model
   - Remaining: release note/tooltip communication
+- [ ] 14. Tooling: adopt BiomeJS
+  - [ ] Add BiomeJS dependency and config (`biome.json`)
+  - [ ] Add scripts for check/format in `package.json`
+  - [ ] Decide coexistence/migration path from current ESLint setup
+  - [ ] Run BiomeJS and fix or suppress baseline issues
+  - [ ] Add CI step for BiomeJS checks
 
 ## Plan
 1. **Priority first step: auth + 5/month enforcement**
