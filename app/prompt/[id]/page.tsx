@@ -11,12 +11,15 @@ import { useRouter } from 'next/navigation';
 import { LoadingModal } from '@/components/LoadingModal';
 import { Footer } from '@/components/Footer';
 import { getAccessToken, getAuthHeaders } from '@/lib/auth/client';
+import { AuthModal } from '@/components/AuthModal';
 
 export default function PromptView({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
     const [data, setData] = useState<RunResponse | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [showAuthModal, setShowAuthModal] = useState(false);
+    const [pendingViewRunId, setPendingViewRunId] = useState<string | null>(null);
     const router = useRouter();
 
     useEffect(() => {
@@ -25,10 +28,22 @@ export default function PromptView({ params }: { params: Promise<{ id: string }>
             setError(null);
             try {
                 const token = await getAccessToken();
+                if (!token) {
+                    setPendingViewRunId(id);
+                    setShowAuthModal(true);
+                    setLoading(false);
+                    return;
+                }
                 const res = await fetch(`/api/run/${id}`, {
-                    headers: token ? await getAuthHeaders() : undefined
+                    headers: await getAuthHeaders()
                 });
                 const json = await res.json();
+                if (res.status === 401) {
+                    setPendingViewRunId(id);
+                    setShowAuthModal(true);
+                    setLoading(false);
+                    return;
+                }
                 if (!res.ok) throw new Error(json.error || 'Failed to fetch run');
                 setData(json);
             } catch (err: unknown) {
@@ -42,10 +57,23 @@ export default function PromptView({ params }: { params: Promise<{ id: string }>
         if (id) {
             fetchRun();
         }
-    }, [id]);
+    }, [id, router]);
 
-    const handleSelectRun = (selectedId: string) => {
+    const handleSelectRun = async (selectedId: string) => {
+        const token = await getAccessToken();
+        if (!token) {
+            setPendingViewRunId(selectedId);
+            setShowAuthModal(true);
+            return;
+        }
         router.push(`/prompt/${selectedId}`);
+    };
+
+    const handleAuthSuccess = () => {
+        const destination = pendingViewRunId || id;
+        setPendingViewRunId(null);
+        setShowAuthModal(false);
+        router.push(`/prompt/${destination}`);
     };
 
     return (
@@ -92,6 +120,12 @@ export default function PromptView({ params }: { params: Promise<{ id: string }>
             </div>
 
             <Footer />
+            <AuthModal
+                open={showAuthModal}
+                onClose={() => setShowAuthModal(false)}
+                onSuccess={handleAuthSuccess}
+                description="Viewing saved prompts requires an account."
+            />
         </main>
     );
 }

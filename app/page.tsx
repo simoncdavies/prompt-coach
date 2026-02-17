@@ -19,6 +19,7 @@ export default function Home() {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [pendingRequest, setPendingRequest] = useState<RunAnalysisRequest | null>(null);
+  const [pendingViewRunId, setPendingViewRunId] = useState<string | null>(null);
   const router = useRouter();
 
   const fetchQuota = async (authUser?: ClientAuthUser | null) => {
@@ -126,7 +127,16 @@ export default function Home() {
 
     const request = pendingRequest;
     setPendingRequest(null);
-    await runEnhancer(request);
+    if (request) {
+      await runEnhancer(request);
+      return;
+    }
+
+    if (pendingViewRunId) {
+      const runId = pendingViewRunId;
+      setPendingViewRunId(null);
+      router.push(`/prompt/${runId}`);
+    }
   };
 
   const quotaHelper = isSignedIn
@@ -137,7 +147,13 @@ export default function Home() {
       : 'Checking quota...'
     : 'Enhancement requires login/register. Free tier: 5 per month.';
 
-  const handleSelectRun = (id: string) => {
+  const handleSelectRun = async (id: string) => {
+    const token = await getAccessToken();
+    if (!token) {
+      setPendingViewRunId(id);
+      setShowAuthModal(true);
+      return;
+    }
     router.push(`/prompt/${id}`);
   };
 

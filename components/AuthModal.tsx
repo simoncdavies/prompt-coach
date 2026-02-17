@@ -10,9 +10,17 @@ interface AuthModalProps {
   open: boolean;
   onClose: () => void;
   onSuccess?: () => void;
+  title?: string;
+  description?: string;
 }
 
-export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
+export function AuthModal({
+  open,
+  onClose,
+  onSuccess,
+  title = "Authentication required",
+  description = "Enhancing prompts requires an account.",
+}: AuthModalProps) {
   const [mode, setMode] = useState<"login" | "register">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -68,8 +76,8 @@ export function AuthModal({ open, onClose, onSuccess }: AuthModalProps) {
         </button>
         <CardContent className="p-6 space-y-4">
           <div>
-            <h2 className="text-lg font-semibold text-[#040F0F]">Authentication required</h2>
-            <p className="text-sm text-[#2D3A3A]">Enhancing prompts requires an account.</p>
+            <h2 className="text-lg font-semibold text-[#040F0F]">{title}</h2>
+            <p className="text-sm text-[#2D3A3A]">{description}</p>
           </div>
 
           <div className="flex gap-2">

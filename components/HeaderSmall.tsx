@@ -82,7 +82,7 @@ const HeaderSmall = () => {
             </header>
 
             {menuOpen && (
-                <div className="fixed inset-0 z-[60] overflow-hidden" aria-hidden={!menuOpen}>
+                <div className="fixed inset-0 z-60 overflow-hidden" aria-hidden={!menuOpen}>
                     <button
                         type="button"
                         className="absolute inset-0 bg-black/25 backdrop-blur-md"
