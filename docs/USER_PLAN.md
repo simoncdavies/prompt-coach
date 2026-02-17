@@ -1,7 +1,7 @@
 # Plan: Enforce Auth for Prompt Enhancer (Keep Recent Prompts Viewable)
 
 ## Goals
-- Allow anyone to click and view recent prompts in full detail (limited to the latest 20 prompts).
+- Allow anyone to browse recent prompts (limited to the latest 20 prompts), but require auth to view full prompt details.
 - Require authentication only when a user tries to use the prompt enhancer.
 - Support existing users logging in and new users registering.
 - Limit prompt enhancer usage to 5 prompts per user per month, resetting on each user's signup day.
@@ -9,9 +9,56 @@
 - Consider upsell paths and paid plans for higher monthly limits.
 
 ## Scope Assumptions
-- “Prompt generator” refers to browsing recent prompts and viewing details.
+- “Prompt generator” refers to browsing recent prompts in list form.
 - “Prompt enhancer” refers to the action that transforms or improves a prompt.
 - Supabase is the auth and data backend.
+
+## Implementation Tracker
+- [x] 1. Auth + 5/month enforcement
+- [x] 2. Product boundaries finalized for phase 1 (enhancer-only limit, per-user, recent=20, basic search)
+- [x] 3. Auth gating rules implemented
+  - Includes consistent modal gating for both enhancer usage and prompt-detail viewing
+- [x] 4. Enhancer/read/search flow inventory reflected in implementation (`prompt_runs.user_id` used for ownership/search)
+- [x] 5. Auth UX implemented (auth page/modal, return flow, draft preservation, logout)
+- [ ] 6. Monthly usage limit hardening
+  - Implemented: usage tables/functions, UTC cycle logic, server checks, blocked messaging, plan table
+  - Remaining: fallback path in `lib/server/quota.ts` is a resilience safety net and is not fully transactional like the RPC lock path
+- [x] 7. Server-side enforcement as source of truth
+- [x] 8. Client affordances (quota messaging, auth-required hint, search page pagination + only-my-prompts)
+- [ ] 9. Navigation/accessibility polish
+  - Implemented: global burger menu, auth-aware items, overlay drawer, keyboard close via `Escape`, aria labels
+  - Remaining: formal focus trap/focus-return management
+- [x] 10. Analytics/auditing hooks (attempt logging + auth-conversion tracking events)
+- [ ] 11. Testing plan execution
+  - Remaining: add automated tests/integration tests for quota cycles, auth gates, search pagination/filtering, and nav behavior
+  - Agreed stack: `Vitest` (unit/server), `@testing-library/react` (component behavior), `Playwright` (critical E2E user flows)
+- [ ] 12. Monetization completion
+  - Implemented: free tier limit, blocked-state upsell copy, `user_plans` data model
+  - Remaining: billing flow/provider integration and pricing/account screens
+  - Google Ads pilot checklist:
+    - [ ] Enable ads for signed-out users only (phase 1)
+    - [ ] Keep signed-in enhancer/results experience ad-free
+    - [ ] Keep paid plans ad-free
+    - [ ] Add ad placements away from prompt input/results content
+    - [ ] Track ad impressions/clicks + impact on signup/upgrade conversion
+    - [ ] Review metrics and decide expand/reduce/remove
+- [ ] 13. Rollout completion
+  - Implemented: migrations for existing users and access model
+  - Remaining: release note/tooltip communication
+- [ ] 14. Tooling: adopt BiomeJS
+  - [ ] Add BiomeJS dependency and config (`biome.json`)
+  - [ ] Add scripts for check/format in `package.json`
+  - [ ] Decide coexistence/migration path from current ESLint setup
+  - [ ] Run BiomeJS and fix or suppress baseline issues
+  - [ ] Add CI step for BiomeJS checks
+- [ ] 15. Expand beyond coding prompts (category selector)
+  - [ ] Add `category` to prompt metadata schema/types/API payloads
+  - [ ] Add category selector UI in prompt editor (default: `coding`)
+  - [ ] Add category-specific analyzer/rewriter system prompt templates
+  - [ ] Keep shared core rubric + category-specific evaluation criteria
+  - [ ] Persist category in `prompt_runs.metadata` for analytics/search
+  - [ ] Keep auth/quota behavior unchanged across categories for phase 1
+  - [ ] Add tests for category routing + default fallback behavior
 
 ## Plan
 1. **Priority first step: auth + 5/month enforcement**
@@ -26,7 +73,8 @@
    - For phase 1, keep search basic with pagination only; defer advanced filtering to phase 2.
 
 3. **Define auth gating rules**
-   - No auth required for browsing recent prompts or viewing full details.
+   - No auth required for browsing recent prompts in list form.
+   - Auth required for viewing full prompt details.
    - Auth required when the user submits to the enhancer (button click, API call).
    - If unauthenticated, show a login/register dialog with a clear return path to the enhancer.
 
@@ -81,7 +129,7 @@
    - Track conversion: unauthenticated users who register after hitting enhancer gate.
 
 11. **Testing plan**
-   - Unauthenticated user can view recent prompts + details.
+   - Unauthenticated user can view recent prompts list, but cannot open full prompt details.
    - Unauthenticated recent prompt list is capped at 20.
    - Unauthenticated user is blocked from enhancer and prompted to log in/register.
    - Authenticated user can use enhancer up to 5 times per month.
@@ -121,7 +169,7 @@
 - Limit resets monthly on the user’s signup day (e.g., register on the 3rd, reset on the 3rd next month).
 - UTC is the source of truth for monthly reset boundaries.
 - Upgrade path should appear when a user hits 5/5 and attempts another enhancement.
-- Unauthenticated users can browse only the most recent 20 prompts; authenticated users have a dedicated search page for full-history retrieval.
+- Unauthenticated users can browse only the most recent 20 prompts in list form; full prompt details require authentication. Authenticated users have a dedicated search page for full-history retrieval.
 - Dedicated search is phase 1 basic pagination (20 per page); advanced filtering is phase 2.
 - Dedicated search includes an "only my prompts" checkbox.
 - No free trial; the 5/month free usage acts as the trial.
@@ -129,3 +177,42 @@
 
 ## Open Questions
 - None at this time.
+
+## Implemented Files (Appendix)
+- `1. Auth + 5/month enforcement`
+  - `app/api/run/route.ts`
+  - `app/page.tsx`
+  - `lib/server/auth.ts`
+  - `lib/server/quota.ts`
+  - `supabase/migrations/0003_auth_and_quota.sql`
+  - `supabase/migrations/0004_secure_quota_tables.sql`
+  - `supabase/migrations/0005_fix_signup_cycle_function.sql`
+- `3. Auth gating rules`
+  - `app/api/run/route.ts`
+  - `app/api/run/[id]/route.ts`
+  - `app/page.tsx`
+  - `app/prompt/[id]/page.tsx`
+  - `components/AuthModal.tsx`
+  - `app/auth/page.tsx`
+- `5. Auth UX`
+  - `components/AuthModal.tsx`
+  - `app/auth/page.tsx`
+  - `components/PromptEditor.tsx`
+  - `components/HeaderSmall.tsx`
+- `7. Server-side enforcement`
+  - `app/api/run/route.ts`
+  - `app/api/run/[id]/route.ts`
+  - `app/api/recent/route.ts`
+  - `app/api/usage/route.ts`
+- `8. Client affordances`
+  - `app/page.tsx`
+  - `components/PromptEditor.tsx`
+  - `app/search/page.tsx`
+  - `app/api/search/route.ts`
+- `9. Navigation (implemented portion)`
+  - `components/HeaderSmall.tsx`
+  - `styles/globals.css`
+- `10. Analytics and auditing`
+  - `lib/analytics.ts`
+  - `app/page.tsx`
+  - `supabase/migrations/0003_auth_and_quota.sql`

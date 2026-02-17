@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabase/server';
 import { RunResponse } from '@/lib/types';
+import { getUserFromRequest } from '@/lib/server/auth';
 
 export async function GET(
     req: NextRequest,
@@ -8,10 +9,14 @@ export async function GET(
 ) {
     try {
         const { id } = await props.params;
-        console.log("Fetching run with ID:", id);
+        const authUser = await getUserFromRequest(req);
 
         if (!id || id === 'undefined') {
             return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
+        }
+
+        if (!authUser) {
+            return NextResponse.json({ error: 'Authentication required.' }, { status: 401 });
         }
 
         const { data, error } = await supabaseServer
@@ -26,6 +31,14 @@ export async function GET(
 
         if (!data) {
             return NextResponse.json({ error: 'Run not found' }, { status: 404 });
+        }
+
+        const isOwner = data.user_id === authUser.id;
+
+        if (!isOwner) {
+            if (!data.is_public) {
+                return NextResponse.json({ error: 'Run not found' }, { status: 404 });
+            }
         }
 
         const response: RunResponse = {

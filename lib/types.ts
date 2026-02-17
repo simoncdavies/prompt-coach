@@ -81,8 +81,17 @@ export interface RunResponse {
   error?: string;
   prompt_original?: string;
   metadata?: PromptMetadata;
+  quota?: QuotaStatus;
 }
 
+export interface QuotaStatus {
+  allowed: boolean;
+  is_unlimited: boolean;
+  used: number;
+  limit: number;
+  remaining: number | null;
+  reset_at: string;
+}
 
 // --- Database Row Interface (Supabase) ---
 export interface PromptRunRow {
@@ -95,4 +104,5 @@ export interface PromptRunRow {
   overall_score: number;
   metadata: PromptMetadata;
   is_public: boolean;
+  user_id: string | null;
 }

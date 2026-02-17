@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, ReactNode, useEffect, useState } from 'react';
 import { PromptMetadata, RunAnalysisRequest, TARGET_MODELS, OUTPUT_STYLES, VERBOSITY_LEVELS } from '@/lib/types';
 import { Card, CardContent } from './ui/Card';
 import { Button } from './ui/Button';
@@ -11,10 +11,23 @@ interface PromptEditorProps {
     isLoading: boolean;
     initialPrompt?: string;
     initialMetadata?: Partial<PromptMetadata>;
+    helperText?: ReactNode;
 }
 
-export function PromptEditor({ onSubmit, isLoading, initialPrompt = '', initialMetadata }: PromptEditorProps) {
-    const [prompt, setPrompt] = useState(initialPrompt);
+const DRAFT_KEY = "prompt-coach:draft";
+
+export function PromptEditor({ onSubmit, isLoading, initialPrompt = '', initialMetadata, helperText }: PromptEditorProps) {
+    const [prompt, setPrompt] = useState(() => {
+        if (initialPrompt) {
+            return initialPrompt;
+        }
+
+        if (typeof window === "undefined") {
+            return "";
+        }
+
+        return localStorage.getItem(DRAFT_KEY) ?? "";
+    });
     const [targetModel, setTargetModel] = useState<PromptMetadata['targetModel']>(initialMetadata?.targetModel || 'Gemini');
     const [outputStyle, setOutputStyle] = useState<PromptMetadata['outputStyle']>(initialMetadata?.outputStyle || 'plan + code + tests');
     const [verbosity, setVerbosity] = useState<PromptMetadata['verbosity']>(initialMetadata?.verbosity || 'normal');
@@ -22,6 +35,10 @@ export function PromptEditor({ onSubmit, isLoading, initialPrompt = '', initialM
     const [isPublic, setIsPublic] = useState(true);
     // Validation
     const isValid = prompt.length >= 10;
+
+    useEffect(() => {
+        localStorage.setItem(DRAFT_KEY, prompt);
+    }, [prompt]);
 
     const handleSubmit = () => {
         if (!isValid) return;
@@ -103,10 +120,13 @@ export function PromptEditor({ onSubmit, isLoading, initialPrompt = '', initialM
                         </label>
                     </div>
 
-                    <Button onClick={handleSubmit} disabled={!isValid || isLoading} size="lg">
-                        <Wand2 className="mr-2 h-4 w-4" />
-                        Analyze Prompt
-                    </Button>
+                    <div className="text-right space-y-1">
+                        {helperText ? <div className="text-xs text-[#2D3A3A]">{helperText}</div> : null}
+                        <Button onClick={handleSubmit} disabled={!isValid || isLoading} size="lg">
+                            <Wand2 className="mr-2 h-4 w-4" />
+                            Analyze Prompt
+                        </Button>
+                    </div>
                 </div>
             </CardContent>
         </Card>

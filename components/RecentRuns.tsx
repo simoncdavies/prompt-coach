@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader } from './ui/Card';
 import { PromptMetadata } from '@/lib/types'; // Assuming types structure
 import { Badge } from './ui/Badge';
+import { formatDateUTC } from '@/lib/utils';
 
 interface RecentRun {
     id: string;
@@ -17,19 +18,46 @@ interface RecentRunsProps {
     onSelect: (id: string) => void;
 }
 
+let recentRunsCache: RecentRun[] | null = null;
+let recentRunsCacheAt = 0;
+let recentRunsInFlight: Promise<RecentRun[]> | null = null;
+const RECENT_CACHE_TTL_MS = 15_000;
+
+async function fetchRecentRunsShared(): Promise<RecentRun[]> {
+    const now = Date.now();
+    if (recentRunsCache && now - recentRunsCacheAt < RECENT_CACHE_TTL_MS) {
+        return recentRunsCache;
+    }
+
+    if (recentRunsInFlight) {
+        return recentRunsInFlight;
+    }
+
+    recentRunsInFlight = fetch('/api/recent')
+        .then((res) => res.json())
+        .then((data) => {
+            const nextRuns = Array.isArray(data.runs)
+                ? data.runs.filter((r: RecentRun) => r.id)
+                : [];
+            recentRunsCache = nextRuns;
+            recentRunsCacheAt = Date.now();
+            return nextRuns;
+        })
+        .finally(() => {
+            recentRunsInFlight = null;
+        });
+
+    return recentRunsInFlight;
+}
+
 export function RecentRuns({ onSelect }: RecentRunsProps) {
     const [runs, setRuns] = useState<RecentRun[]>([]);
     const [loading, setLoading] = useState(true);
 
     const fetchRecent = () => {
-        fetch('/api/recent')
-            .then(res => res.json())
-            .then(data => {
-                if (data.runs) {
-                    console.log("Recent runs fetched:", data.runs.length);
-                    // Filter out any runs that don't have an ID to prevent click errors
-                    setRuns(data.runs.filter((r: RecentRun) => r.id));
-                }
+        fetchRecentRunsShared()
+            .then((nextRuns) => {
+                setRuns(nextRuns);
             })
             .catch(err => console.error(err))
             .finally(() => setLoading(false));
@@ -61,7 +89,7 @@ export function RecentRuns({ onSelect }: RecentRunsProps) {
                                     Score: {run.overall_score}/10
                                 </Badge>
                                 <span className="text-xs text-[#2D3A3A]/70">
-                                    {new Date(run.created_at).toLocaleDateString()}
+                                    {formatDateUTC(run.created_at)}
                                 </span>
                             </div>
                         </CardHeader>
@@ -80,4 +108,3 @@ export function RecentRuns({ onSelect }: RecentRunsProps) {
         </div>
     );
 }
-
