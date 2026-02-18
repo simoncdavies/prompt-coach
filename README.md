@@ -1,75 +1,92 @@
-# Prompt Coach (Coding)
+# Prompt Coach
 
-A Next.js web application that analyzes and improves AI coding prompts using Google Gemini.
+Prompt Coach is a Next.js app that analyzes and rewrites coding prompts using Google Gemini, with auth and storage backed by Supabase.
 
 ## Features
 
-- **Prompt Analysis**: Scores your prompt on clarity, context, constraints, and more.
-- **Smart Rewriter**: Automatically rewrites your prompt to be production-ready and generates a minimal concise version.
-- **Privacy First**: Secrets are redacted before processing. No prompts are stored unless explicitly saved.
-- **Public Library**: Option to save anonymized runs to a public gallery.
+- Prompt scoring across clarity, context, constraints, output format, and safety.
+- Prompt rewrite output in two forms: detailed and minimal.
+- Secret redaction before AI processing.
+- Auth-gated prompt enhancement with monthly quota tracking.
+- Recent public runs and signed-in history/search views.
 
 ## Tech Stack
 
-- **Framework**: Next.js 14+ (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **AI**: Google Gemini API (`gemini-1.5-flash`)
-- **Database**: Supabase (PostgreSQL)
+- Framework: Next.js 16 (App Router)
+- Language: TypeScript
+- Styling: Tailwind CSS 4
+- Lint/Format: Biome
+- AI: Google GenAI SDK (`@google/genai`) using `gemini-3-flash-preview`
+- Database/Auth: Supabase
 
-## Getting Started
-
-### Prerequisites
+## Prerequisites
 
 - Node.js 18+
-- A Google API Key (Gemini)
-- A Supabase Project
+- pnpm
+- Supabase project
+- Gemini API key
 
-### 1. Clone & Install
+## Setup
+
+### 1. Install dependencies
 
 ```bash
-git clone <your-repo>
-cd prompt-coach
 pnpm install
 ```
 
-### 2. Environment Setup
+### 2. Configure environment
 
-Copy `.env.example` to `.env.local` and fill in your keys:
+Copy `.env.example` to `.env.local` and fill values:
 
 ```bash
 cp .env.example .env.local
 ```
 
+Required variables:
+
 ```env
-NEXT_PUBLIC_SUPABASE_URL=your-sb-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-sb-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-sb-service-role-key
-GEMINI_API_KEY=your-gemini-key
+NEXT_PUBLIC_SUPABASE_URL=your-project-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+GEMINI_API_KEY=your-gemini-api-key
+NEXT_PUBLIC_GA_MEASUREMENT_ID=your-ga-measurement-id
 ```
 
-### 3. Database Setup (Supabase)
+### 3. Run Supabase migrations
 
-1. Go to your Supabase Dashboard -> SQL Editor.
-2. Run the content of `supabase/migrations/0000_init.sql`.
-   - This creates the `prompt_runs` table.
-   - Enables Row Level Security (RLS).
-   - Sets up public read access for `is_public=true`.
+Apply all SQL files in `supabase/migrations` in order:
 
-### 4. Run Locally
+1. `supabase/migrations/0000_init.sql`
+2. `supabase/migrations/0001_add_minimal_prompt.sql`
+3. `supabase/migrations/0002_lock_down_insert.sql`
+4. `supabase/migrations/0003_auth_and_quota.sql`
+5. `supabase/migrations/0004_secure_quota_tables.sql`
+6. `supabase/migrations/0005_fix_signup_cycle_function.sql`
+
+### 4. Start the app
 
 ```bash
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open `http://localhost:3000`.
 
-## Deployment (Vercel)
+## Scripts
 
-1. Push code to GitHub.
-2. Import project into Vercel.
-3. Add the Environment Variables from step 2 to Vercel Project Settings.
-4. Deploy!
+- `pnpm dev` start local dev server
+- `pnpm build` build for production
+- `pnpm start` run production build
+- `pnpm lint` run Biome checks
+- `pnpm format` format with Biome (`--write`)
+- `pnpm format:check` run formatter without writing
+- `pnpm test` run Vitest
+- `pnpm test:coverage` run tests with coverage
+
+## Behavior Notes
+
+- Prompt enhancement (`POST /api/run`) requires authentication.
+- The app tracks monthly usage quota per user.
+- Public runs are queryable for recent/public browsing.
 
 ## License
 
