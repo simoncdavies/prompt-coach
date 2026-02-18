@@ -33,7 +33,6 @@
   @apply text-bright-green font-bold;
 }
 
-
 body {
   background: var(--background);
   color: var(--foreground);

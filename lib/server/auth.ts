@@ -1,5 +1,5 @@
-import { NextRequest } from "next/server";
-import { supabaseServer } from "@/lib/supabase/server";
+import type { NextRequest } from 'next/server';
+import { supabaseServer } from '@/lib/supabase/server';
 
 export interface AuthUser {
   id: string;
@@ -8,20 +8,22 @@ export interface AuthUser {
 }
 
 function getBearerToken(req: NextRequest): string | null {
-  const auth = req.headers.get("authorization");
+  const auth = req.headers.get('authorization');
   if (!auth) {
     return null;
   }
 
-  const [scheme, token] = auth.split(" ");
-  if (scheme?.toLowerCase() !== "bearer" || !token) {
+  const [scheme, token] = auth.split(' ');
+  if (scheme?.toLowerCase() !== 'bearer' || !token) {
     return null;
   }
 
   return token;
 }
 
-export async function getUserFromRequest(req: NextRequest): Promise<AuthUser | null> {
+export async function getUserFromRequest(
+  req: NextRequest,
+): Promise<AuthUser | null> {
   const token = getBearerToken(req);
   if (!token) {
     return null;

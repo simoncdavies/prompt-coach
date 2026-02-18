@@ -1,19 +1,19 @@
 export type AnalyticsEventParams = Record<string, unknown>;
 
 export function trackEvent(action: string, params: AnalyticsEventParams = {}) {
-  if (typeof window === "undefined") {
+  if (typeof window === 'undefined') {
     return;
   }
 
   const gtag = (
     window as typeof window & {
-      gtag?: (command: "config" | "event" | "js", ...args: unknown[]) => void;
+      gtag?: (command: 'config' | 'event' | 'js', ...args: unknown[]) => void;
     }
   ).gtag;
 
-  if (typeof gtag !== "function") {
+  if (typeof gtag !== 'function') {
     return;
   }
 
-  gtag("event", action, params);
+  gtag('event', action, params);
 }

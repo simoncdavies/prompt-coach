@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useCallback, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { HeaderSmall } from "@/components/HeaderSmall";
-import { Footer } from "@/components/Footer";
-import { Card, CardContent, CardHeader } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
-import { getAccessToken, getAuthHeaders } from "@/lib/auth/client";
-import { formatDateUTC } from "@/lib/utils";
+import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
+import { Footer } from '@/components/Footer';
+import { HeaderSmall } from '@/components/HeaderSmall';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/Button';
+import { Card, CardContent, CardHeader } from '@/components/ui/Card';
+import { getAccessToken, getAuthHeaders } from '@/lib/auth/client';
+import { formatDateUTC } from '@/lib/utils';
 
 interface SearchRun {
   id: string;
@@ -31,42 +31,45 @@ export default function SearchPage() {
   const [error, setError] = useState<string | null>(null);
   const [authorized, setAuthorized] = useState(true);
 
-  const fetchPage = useCallback(async (nextPage: number, replace = false) => {
-    const token = await getAccessToken();
-    if (!token) {
-      setAuthorized(false);
-      setLoading(false);
-      return;
-    }
-
-    setAuthorized(true);
-    setLoading(true);
-    setError(null);
-
-    try {
-      const params = new URLSearchParams({
-        page: String(nextPage),
-        onlyMine: String(onlyMine),
-      });
-      const res = await fetch(`/api/search?${params.toString()}`, {
-        headers: await getAuthHeaders(),
-        cache: "no-store",
-      });
-      const json = await res.json();
-      if (!res.ok) {
-        throw new Error(json.error || "Could not load prompt history");
+  const fetchPage = useCallback(
+    async (nextPage: number, replace = false) => {
+      const token = await getAccessToken();
+      if (!token) {
+        setAuthorized(false);
+        setLoading(false);
+        return;
       }
-      const nextRuns = (json.runs ?? []) as SearchRun[];
-      setRuns((prev) => (replace ? nextRuns : [...prev, ...nextRuns]));
-      setPage(nextPage);
-      setHasMore(Boolean(json.hasMore));
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Search failed";
-      setError(message);
-    } finally {
-      setLoading(false);
-    }
-  }, [onlyMine]);
+
+      setAuthorized(true);
+      setLoading(true);
+      setError(null);
+
+      try {
+        const params = new URLSearchParams({
+          page: String(nextPage),
+          onlyMine: String(onlyMine),
+        });
+        const res = await fetch(`/api/search?${params.toString()}`, {
+          headers: await getAuthHeaders(),
+          cache: 'no-store',
+        });
+        const json = await res.json();
+        if (!res.ok) {
+          throw new Error(json.error || 'Could not load prompt history');
+        }
+        const nextRuns = (json.runs ?? []) as SearchRun[];
+        setRuns((prev) => (replace ? nextRuns : [...prev, ...nextRuns]));
+        setPage(nextPage);
+        setHasMore(Boolean(json.hasMore));
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Search failed';
+        setError(message);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [onlyMine],
+  );
 
   useEffect(() => {
     fetchPage(1, true);
@@ -78,14 +81,20 @@ export default function SearchPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6">
         <div className="space-y-2">
           <h1 className="text-3xl font-bold text-[#040F0F]">Prompt History</h1>
-          <p className="text-[#2D3A3A] text-sm">Browse your saved reviews and public prompts, 20 at a time.</p>
+          <p className="text-[#2D3A3A] text-sm">
+            Browse your saved reviews and public prompts, 20 at a time.
+          </p>
         </div>
 
         {!authorized ? (
           <Card>
             <CardContent className="p-6 space-y-3">
-              <p className="text-sm text-[#2D3A3A]">Sign in to view and search prompt history.</p>
-              <Button onClick={() => router.push("/auth?returnTo=/search")}>Sign in / Create account</Button>
+              <p className="text-sm text-[#2D3A3A]">
+                Sign in to view and search prompt history.
+              </p>
+              <Button onClick={() => router.push('/auth?returnTo=/search')}>
+                Sign in / Create account
+              </Button>
             </CardContent>
           </Card>
         ) : (
@@ -114,7 +123,15 @@ export default function SearchPage() {
                 >
                   <CardHeader className="pb-2">
                     <div className="flex justify-between items-start">
-                      <Badge variant={run.overall_score >= 8 ? "success" : run.overall_score >= 5 ? "warning" : "destructive"}>
+                      <Badge
+                        variant={
+                          run.overall_score >= 8
+                            ? 'success'
+                            : run.overall_score >= 5
+                              ? 'warning'
+                              : 'destructive'
+                        }
+                      >
                         Score {run.overall_score}/10
                       </Badge>
                       <span className="text-xs text-[#2D3A3A]/70">
@@ -123,11 +140,18 @@ export default function SearchPage() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-xs text-[#2D3A3A] line-clamp-3 font-mono mb-2">{run.prompt_original}</p>
+                    <p className="text-xs text-[#2D3A3A] line-clamp-3 font-mono mb-2">
+                      {run.prompt_original}
+                    </p>
                     <div className="flex justify-between items-center">
-                      <Badge variant="outline" className="text-[10px]">{run.metadata?.targetModel || "Not set"}</Badge>
-                      <Badge variant={run.is_public ? "success" : "outline"} className="text-[10px]">
-                        {run.is_public ? "Public" : "Private"}
+                      <Badge variant="outline" className="text-[10px]">
+                        {run.metadata?.targetModel || 'Not set'}
+                      </Badge>
+                      <Badge
+                        variant={run.is_public ? 'success' : 'outline'}
+                        className="text-[10px]"
+                      >
+                        {run.is_public ? 'Public' : 'Private'}
                       </Badge>
                     </div>
                   </CardContent>

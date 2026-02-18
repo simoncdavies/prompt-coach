@@ -1,87 +1,87 @@
-import type { Metadata } from "next";
-import { Space_Grotesk, Roboto_Mono } from "next/font/google";
-import { GoogleAnalytics } from "@/components/analytics/google-analytics";
-import "../styles/globals.css";
+import type { Metadata } from 'next';
+import { Roboto_Mono, Space_Grotesk } from 'next/font/google';
+import { GoogleAnalytics } from '@/components/analytics/google-analytics';
+import '../styles/globals.css';
 
 const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-space-grotesk",
-  display: "swap",
+  subsets: ['latin'],
+  variable: '--font-space-grotesk',
+  display: 'swap',
 });
 
 const robotoMono = Roboto_Mono({
-  subsets: ["latin"],
-  variable: "--font-roboto-mono",
-  display: "swap",
+  subsets: ['latin'],
+  variable: '--font-roboto-mono',
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://prompt.dvlpr.co.uk"),
+  metadataBase: new URL('https://prompt.dvlpr.co.uk'),
   title: {
-    default: "Prompt Coach | Write Prompts That Get Better Code",
-    template: "%s | Prompt Coach",
+    default: 'Prompt Coach | Write Prompts That Get Better Code',
+    template: '%s | Prompt Coach',
   },
   description:
-    "Paste your prompt and get clear feedback plus an improved version for Claude, OpenAI, and Gemini.",
+    'Paste your prompt and get clear feedback plus an improved version for Claude, OpenAI, and Gemini.',
   keywords: [
-    "prompt engineering",
-    "AI code generation",
-    "prompt linting",
-    "Claude",
-    "OpenAI",
-    "Gemini",
-    "developer tools",
-    "code review",
-    "LLM prompts",
+    'prompt engineering',
+    'AI code generation',
+    'prompt linting',
+    'Claude',
+    'OpenAI',
+    'Gemini',
+    'developer tools',
+    'code review',
+    'LLM prompts',
   ],
-  applicationName: "Prompt Coach",
-  authors: [{ name: "Prompt Coach" }],
-  creator: "Prompt Coach",
-  publisher: "Prompt Coach",
-  manifest: "/manifest.webmanifest",
+  applicationName: 'Prompt Coach',
+  authors: [{ name: 'Prompt Coach' }],
+  creator: 'Prompt Coach',
+  publisher: 'Prompt Coach',
+  manifest: '/manifest.webmanifest',
   icons: {
     icon: [
-      { url: "/favicon.ico" },
-      { url: "/favicon.svg", type: "image/svg+xml" },
-      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
-      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-      { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+      { url: '/favicon.ico' },
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
     ],
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
     other: [
       {
-        rel: "mask-icon",
-        url: "/favicon.svg",
-        color: "#2ba84a",
+        rel: 'mask-icon',
+        url: '/favicon.svg',
+        color: '#2ba84a',
       },
     ],
   },
   alternates: {
-    canonical: "/",
+    canonical: '/',
   },
   openGraph: {
-    title: "Prompt Coach | Write Prompts That Get Better Code",
+    title: 'Prompt Coach | Write Prompts That Get Better Code',
     description:
-      "Write clearer prompts and get better coding results with structured feedback and improved rewrites.",
-    url: "/",
-    siteName: "Prompt Coach",
-    locale: "en_US",
-    type: "website",
+      'Write clearer prompts and get better coding results with structured feedback and improved rewrites.',
+    url: '/',
+    siteName: 'Prompt Coach',
+    locale: 'en_US',
+    type: 'website',
     images: [
       {
-        url: "/og.png",
+        url: '/og.png',
         width: 1200,
         height: 630,
-        alt: "Prompt Coach - Refine AI coding prompts",
+        alt: 'Prompt Coach - Refine AI coding prompts',
       },
     ],
   },
   twitter: {
-    card: "summary_large_image",
-    title: "Prompt Coach | Write Prompts That Get Better Code",
+    card: 'summary_large_image',
+    title: 'Prompt Coach | Write Prompts That Get Better Code',
     description:
-      "Paste your prompt, get practical feedback, and improve AI coding outputs across major models.",
-    images: ["/og.png"],
+      'Paste your prompt, get practical feedback, and improve AI coding outputs across major models.',
+    images: ['/og.png'],
   },
   robots: {
     index: true,

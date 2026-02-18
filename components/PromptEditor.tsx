@@ -1,140 +1,213 @@
-"use client";
+'use client';
 
-import { ChangeEvent, ReactNode, useEffect, useState } from 'react';
-import { PromptMetadata, RunAnalysisRequest, TARGET_MODELS, OUTPUT_STYLES, VERBOSITY_LEVELS } from '@/lib/types';
-import { Card, CardContent } from './ui/Card';
-import { Button } from './ui/Button';
 import { Wand2 } from 'lucide-react';
+import { type ChangeEvent, type ReactNode, useEffect, useState } from 'react';
+import {
+  OUTPUT_STYLES,
+  type PromptMetadata,
+  type RunAnalysisRequest,
+  TARGET_MODELS,
+  VERBOSITY_LEVELS,
+} from '@/lib/types';
+import { Button } from './ui/Button';
+import { Card, CardContent } from './ui/Card';
 
 interface PromptEditorProps {
-    onSubmit: (data: RunAnalysisRequest) => void;
-    isLoading: boolean;
-    initialPrompt?: string;
-    initialMetadata?: Partial<PromptMetadata>;
-    helperText?: ReactNode;
+  onSubmit: (data: RunAnalysisRequest) => void;
+  isLoading: boolean;
+  initialPrompt?: string;
+  initialMetadata?: Partial<PromptMetadata>;
+  helperText?: ReactNode;
 }
 
-const DRAFT_KEY = "prompt-coach:draft";
+const DRAFT_KEY = 'prompt-coach:draft';
 
-export function PromptEditor({ onSubmit, isLoading, initialPrompt = '', initialMetadata, helperText }: PromptEditorProps) {
-    const [prompt, setPrompt] = useState(initialPrompt || "");
-    const [targetModel, setTargetModel] = useState<PromptMetadata['targetModel']>(initialMetadata?.targetModel || 'Gemini');
-    const [outputStyle, setOutputStyle] = useState<PromptMetadata['outputStyle']>(initialMetadata?.outputStyle || 'plan + code + tests');
-    const [verbosity, setVerbosity] = useState<PromptMetadata['verbosity']>(initialMetadata?.verbosity || 'normal');
+export function PromptEditor({
+  onSubmit,
+  isLoading,
+  initialPrompt = '',
+  initialMetadata,
+  helperText,
+}: PromptEditorProps) {
+  const [prompt, setPrompt] = useState(initialPrompt || '');
+  const [targetModel, setTargetModel] = useState<PromptMetadata['targetModel']>(
+    initialMetadata?.targetModel || 'Gemini',
+  );
+  const [outputStyle, setOutputStyle] = useState<PromptMetadata['outputStyle']>(
+    initialMetadata?.outputStyle || 'plan + code + tests',
+  );
+  const [verbosity, setVerbosity] = useState<PromptMetadata['verbosity']>(
+    initialMetadata?.verbosity || 'normal',
+  );
 
-    const [isPublic, setIsPublic] = useState(true);
-    // Validation
-    const isValid = prompt.length >= 10;
+  const [isPublic, setIsPublic] = useState(true);
+  // Validation
+  const isValid = prompt.length >= 10;
 
-    useEffect(() => {
-        if (initialPrompt || typeof window === "undefined") {
-            return;
-        }
+  useEffect(() => {
+    if (initialPrompt || typeof window === 'undefined') {
+      return;
+    }
 
-        const savedDraft = localStorage.getItem(DRAFT_KEY);
-        if (savedDraft) {
-            setPrompt(savedDraft);
-        }
-    }, [initialPrompt]);
+    const savedDraft = localStorage.getItem(DRAFT_KEY);
+    if (savedDraft) {
+      setPrompt(savedDraft);
+    }
+  }, [initialPrompt]);
 
-    useEffect(() => {
-        if (typeof window === "undefined") {
-            return;
-        }
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
 
-        localStorage.setItem(DRAFT_KEY, prompt);
-    }, [prompt]);
+    localStorage.setItem(DRAFT_KEY, prompt);
+  }, [prompt]);
 
-    const handleSubmit = () => {
-        if (!isValid) return;
-        onSubmit({
-            prompt,
-            metadata: { targetModel, outputStyle, verbosity },
-            save: true,
-            isPublic: isPublic,
-        });
-    };
+  const handleSubmit = () => {
+    if (!isValid) return;
+    onSubmit({
+      prompt,
+      metadata: { targetModel, outputStyle, verbosity },
+      save: true,
+      isPublic: isPublic,
+    });
+  };
 
-    return (
-        <Card className="w-full">
-            <CardContent className="p-6 space-y-4">
-                <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                        <label className="text-sm font-medium text-[#040F0F]">Your prompt</label>
-                        <span suppressHydrationWarning className="text-xs text-[#2D3A3A]/70">{prompt.length} characters</span>
-                    </div>
-                    <textarea
-                        suppressHydrationWarning
-                        className="w-full h-64 p-4 rounded-lg border border-[#2D3A3A]/25 focus:ring-2 focus:ring-[#2BA84A] focus:border-transparent outline-none resize-none font-mono text-sm bg-[#FCFFFC]"
-                        placeholder="Paste the prompt you want to improve..."
-                        value={prompt}
-                        onChange={(e) => setPrompt(e.target.value)}
-                        disabled={isLoading}
-                    />
-                </div>
+  return (
+    <Card className="w-full">
+      <CardContent className="p-6 space-y-4">
+        <div className="space-y-2">
+          <div className="flex justify-between items-center">
+            <label
+              htmlFor="prompt-input"
+              className="text-sm font-medium text-[#040F0F]"
+            >
+              Your prompt
+            </label>
+            <span
+              suppressHydrationWarning
+              className="text-xs text-[#2D3A3A]/70"
+            >
+              {prompt.length} characters
+            </span>
+          </div>
+          <textarea
+            id="prompt-input"
+            suppressHydrationWarning
+            className="w-full h-64 p-4 rounded-lg border border-[#2D3A3A]/25 focus:ring-2 focus:ring-[#2BA84A] focus:border-transparent outline-none resize-none font-mono text-sm bg-[#FCFFFC]"
+            placeholder="Paste the prompt you want to improve..."
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            disabled={isLoading}
+          />
+        </div>
 
-                {/* Controls Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-                    <div className="space-y-1">
-                        <label className="text-xs font-semibold text-[#2D3A3A] uppercase">AI model</label>
-                        <select
-                            className="w-full p-2 text-sm rounded-md border border-[#2D3A3A]/25 bg-white text-[#040F0F] focus:border-[#2BA84A] focus:outline-none"
-                            value={targetModel}
-                            onChange={(e: ChangeEvent<HTMLSelectElement>) => setTargetModel(e.target.value as PromptMetadata['targetModel'])}
-                            disabled={isLoading}
-                        >
-                            {TARGET_MODELS.map((m) => <option key={m} value={m}>{m}</option>)}
-                        </select>
-                    </div>
+        {/* Controls Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+          <div className="space-y-1">
+            <label
+              htmlFor="target-model"
+              className="text-xs font-semibold text-[#2D3A3A] uppercase"
+            >
+              AI model
+            </label>
+            <select
+              id="target-model"
+              className="w-full p-2 text-sm rounded-md border border-[#2D3A3A]/25 bg-white text-[#040F0F] focus:border-[#2BA84A] focus:outline-none"
+              value={targetModel}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                setTargetModel(e.target.value as PromptMetadata['targetModel'])
+              }
+              disabled={isLoading}
+            >
+              {TARGET_MODELS.map((m) => (
+                <option key={m} value={m}>
+                  {m}
+                </option>
+              ))}
+            </select>
+          </div>
 
-                    <div className="space-y-1">
-                        <label className="text-xs font-semibold text-[#2D3A3A] uppercase">Response format</label>
-                        <select
-                            className="w-full p-2 text-sm rounded-md border border-[#2D3A3A]/25 bg-white text-[#040F0F] focus:border-[#2BA84A] focus:outline-none"
-                            value={outputStyle}
-                            onChange={(e: ChangeEvent<HTMLSelectElement>) => setOutputStyle(e.target.value as PromptMetadata['outputStyle'])}
-                            disabled={isLoading}
-                        >
-                            {OUTPUT_STYLES.map((s) => <option key={s} value={s}>{s}</option>)}
-                        </select>
-                    </div>
+          <div className="space-y-1">
+            <label
+              htmlFor="output-style"
+              className="text-xs font-semibold text-[#2D3A3A] uppercase"
+            >
+              Response format
+            </label>
+            <select
+              id="output-style"
+              className="w-full p-2 text-sm rounded-md border border-[#2D3A3A]/25 bg-white text-[#040F0F] focus:border-[#2BA84A] focus:outline-none"
+              value={outputStyle}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                setOutputStyle(e.target.value as PromptMetadata['outputStyle'])
+              }
+              disabled={isLoading}
+            >
+              {OUTPUT_STYLES.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+          </div>
 
-                    <div className="space-y-1">
-                        <label className="text-xs font-semibold text-[#2D3A3A] uppercase">Detail level</label>
-                        <select
-                            className="w-full p-2 text-sm rounded-md border border-[#2D3A3A]/25 bg-white text-[#040F0F] focus:border-[#2BA84A] focus:outline-none"
-                            value={verbosity}
-                            onChange={(e: ChangeEvent<HTMLSelectElement>) => setVerbosity(e.target.value as PromptMetadata['verbosity'])}
-                            disabled={isLoading}
-                        >
-                            {VERBOSITY_LEVELS.map((v) => <option key={v} value={v}>{v}</option>)}
-                        </select>
-                    </div>
-                </div>
+          <div className="space-y-1">
+            <label
+              htmlFor="verbosity-level"
+              className="text-xs font-semibold text-[#2D3A3A] uppercase"
+            >
+              Detail level
+            </label>
+            <select
+              id="verbosity-level"
+              className="w-full p-2 text-sm rounded-md border border-[#2D3A3A]/25 bg-white text-[#040F0F] focus:border-[#2BA84A] focus:outline-none"
+              value={verbosity}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                setVerbosity(e.target.value as PromptMetadata['verbosity'])
+              }
+              disabled={isLoading}
+            >
+              {VERBOSITY_LEVELS.map((v) => (
+                <option key={v} value={v}>
+                  {v}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
 
-                <div className="flex items-center justify-between pt-4 border-t border-[#2D3A3A]/15">
-                    <div className="flex items-center space-x-6">
-                        <label className="flex items-center space-x-2 cursor-pointer">
-                            <input
-                                type="checkbox"
-                                className="rounded border-[#2D3A3A]/40 text-[#2BA84A] focus:ring-[#2BA84A]"
-                                checked={isPublic}
-                                onChange={(e) => setIsPublic(e.target.checked)}
-                                disabled={isLoading}
-                            />
-                            <span className="text-sm text-[#2D3A3A]">Share publicly (without your email)</span>
-                        </label>
-                    </div>
+        <div className="flex items-center justify-between pt-4 border-t border-[#2D3A3A]/15">
+          <div className="flex items-center space-x-6">
+            <label className="flex items-center space-x-2 cursor-pointer">
+              <input
+                type="checkbox"
+                className="rounded border-[#2D3A3A]/40 text-[#2BA84A] focus:ring-[#2BA84A]"
+                checked={isPublic}
+                onChange={(e) => setIsPublic(e.target.checked)}
+                disabled={isLoading}
+              />
+              <span className="text-sm text-[#2D3A3A]">
+                Share publicly (without your email)
+              </span>
+            </label>
+          </div>
 
-                    <div className="text-right space-y-1">
-                        {helperText ? <div className="text-xs text-[#2D3A3A]">{helperText}</div> : null}
-                        <Button onClick={handleSubmit} disabled={!isValid || isLoading} size="lg">
-                            <Wand2 className="mr-2 h-4 w-4" />
-                            Improve Prompt
-                        </Button>
-                    </div>
-                </div>
-            </CardContent>
-        </Card>
-    );
+          <div className="text-right space-y-1">
+            {helperText ? (
+              <div className="text-xs text-[#2D3A3A]">{helperText}</div>
+            ) : null}
+            <Button
+              onClick={handleSubmit}
+              disabled={!isValid || isLoading}
+              size="lg"
+            >
+              <Wand2 className="mr-2 h-4 w-4" />
+              Improve Prompt
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
 }

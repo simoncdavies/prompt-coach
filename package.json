@@ -6,7 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "format:check": "biome format .",
+    "format": "biome format --write .",
+    "lint": "biome check .",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@google/genai": "^1.34.0",
@@ -21,13 +26,17 @@
     "zod": "^4.2.1"
   },
   "devDependencies": {
+    "@biomejs/biome": "latest",
     "@tailwindcss/postcss": "^4",
+    "@testing-library/jest-dom": "latest",
+    "@testing-library/react": "latest",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.0.10",
+    "@vitest/coverage-v8": "^4.0.18",
+    "jsdom": "latest",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "latest"
   }
 }

@@ -1,16 +1,22 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
+import { AuthModal } from '@/components/AuthModal';
+import { Footer } from '@/components/Footer';
+import { HeaderSmall } from '@/components/HeaderSmall';
+import { LoadingModal } from '@/components/LoadingModal';
 import { PromptEditor } from '@/components/PromptEditor';
 import { RecentRuns } from '@/components/RecentRuns';
-import { HeaderSmall } from '@/components/HeaderSmall';
-import { QuotaStatus, RunAnalysisRequest } from '@/lib/types';
-import { useRouter } from 'next/navigation';
-import { Footer } from '@/components/Footer';
-import { LoadingModal } from '@/components/LoadingModal';
-import { AuthModal } from '@/components/AuthModal';
-import { ClientAuthUser, getAccessToken, getAuthHeaders, getCurrentUser, onAuthChange } from '@/lib/auth/client';
 import { trackEvent } from '@/lib/analytics';
+import {
+  type ClientAuthUser,
+  getAccessToken,
+  getAuthHeaders,
+  getCurrentUser,
+  onAuthChange,
+} from '@/lib/auth/client';
+import type { QuotaStatus, RunAnalysisRequest } from '@/lib/types';
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
@@ -18,12 +24,13 @@ export default function Home() {
   const [quota, setQuota] = useState<QuotaStatus | null>(null);
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [pendingRequest, setPendingRequest] = useState<RunAnalysisRequest | null>(null);
+  const [pendingRequest, setPendingRequest] =
+    useState<RunAnalysisRequest | null>(null);
   const [pendingViewRunId, setPendingViewRunId] = useState<string | null>(null);
   const router = useRouter();
 
-  const fetchQuota = async (authUser?: ClientAuthUser | null) => {
-    const user = authUser ?? await getCurrentUser();
+  const fetchQuota = useCallback(async (authUser?: ClientAuthUser | null) => {
+    const user = authUser ?? (await getCurrentUser());
     if (!user) {
       setQuota(null);
       setIsSignedIn(false);
@@ -43,7 +50,7 @@ export default function Home() {
 
     const json = await res.json();
     setQuota(json.quota ?? null);
-  };
+  }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthChange((user) => {
@@ -51,7 +58,7 @@ export default function Home() {
     });
 
     return unsubscribe;
-  }, []);
+  }, [fetchQuota]);
 
   const runEnhancer = async (request: RunAnalysisRequest) => {
     setLoading(true);
@@ -77,24 +84,28 @@ export default function Home() {
           throw new Error('Please sign in to improve your prompt.');
         }
         if (res.status === 429) {
-          trackEvent('enhancer_quota_blocked', { limit: json?.quota?.limit ?? 5 });
+          trackEvent('enhancer_quota_blocked', {
+            limit: json?.quota?.limit ?? 5,
+          });
           throw new Error(
-            'You have used all 5 free prompt improvements this month. Upgrade for higher monthly limits.'
+            'You have used all 5 free prompt improvements this month. Upgrade for higher monthly limits.',
           );
         }
         throw new Error(json.error || 'Something went wrong');
       }
 
-      trackEvent('enhancer_attempt_allowed', { targetModel: request.metadata.targetModel });
+      trackEvent('enhancer_attempt_allowed', {
+        targetModel: request.metadata.targetModel,
+      });
 
       if (json.runId) {
         router.push(`/prompt/${json.runId}`);
       } else {
-        throw new Error("No run ID returned from API");
+        throw new Error('No run ID returned from API');
       }
-
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Something went wrong';
+      const message =
+        err instanceof Error ? err.message : 'Something went wrong';
       setError(message);
       setLoading(false);
     }
@@ -106,7 +117,9 @@ export default function Home() {
       setPendingRequest(request);
       setPendingViewRunId(null);
       setShowAuthModal(true);
-      setError('You need an account to improve prompts. Sign in or create one to continue.');
+      setError(
+        'You need an account to improve prompts. Sign in or create one to continue.',
+      );
       trackEvent('enhancer_auth_gate_shown');
       return;
     }
@@ -157,18 +170,24 @@ export default function Home() {
     router.push(`/prompt/${id}`);
   };
 
-
   return (
     <main className="min-h-screen bg-[#FCFFFC]">
       <HeaderSmall />
-      {loading && <LoadingModal message="Reviewing your prompt and preparing suggestions..." />}
+      {loading && (
+        <LoadingModal message="Reviewing your prompt and preparing suggestions..." />
+      )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
         {/* Hero / Input */}
         <section className="space-y-6 max-w-4xl mx-auto">
           <div className="text-center space-y-2">
-            <h2 className="text-3xl font-bold text-[#040F0F]">Write prompts that get better code</h2>
-            <p className="text-[#2D3A3A]">Paste your prompt, then get clear feedback and an improved version for Claude, OpenAI, or Gemini.</p>
+            <h2 className="text-3xl font-bold text-[#040F0F]">
+              Write prompts that get better code
+            </h2>
+            <p className="text-[#2D3A3A]">
+              Paste your prompt, then get clear feedback and an improved version
+              for Claude, OpenAI, or Gemini.
+            </p>
           </div>
 
           <PromptEditor
@@ -176,7 +195,6 @@ export default function Home() {
             isLoading={loading}
             helperText={quotaHelper}
           />
-
 
           {error && (
             <div className="p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm text-center">
@@ -192,7 +210,11 @@ export default function Home() {
       </div>
 
       <Footer />
-      <AuthModal open={showAuthModal} onClose={() => setShowAuthModal(false)} onSuccess={handleAuthSuccess} />
+      <AuthModal
+        open={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onSuccess={handleAuthSuccess}
+      />
     </main>
   );
 }

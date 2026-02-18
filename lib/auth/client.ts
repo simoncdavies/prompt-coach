@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { supabase } from "@/lib/supabase/client";
+import { supabase } from '@/lib/supabase/client';
 
 export interface ClientAuthUser {
   id: string;
@@ -26,18 +26,22 @@ export async function getCurrentUser(): Promise<ClientAuthUser | null> {
   };
 }
 
-export function onAuthChange(callback: (user: ClientAuthUser | null) => void): () => void {
-  const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-    const user = session?.user;
-    callback(
-      user
-        ? {
-            id: user.id,
-            email: user.email ?? null,
-          }
-        : null
-    );
-  });
+export function onAuthChange(
+  callback: (user: ClientAuthUser | null) => void,
+): () => void {
+  const { data: listener } = supabase.auth.onAuthStateChange(
+    (_event, session) => {
+      const user = session?.user;
+      callback(
+        user
+          ? {
+              id: user.id,
+              email: user.email ?? null,
+            }
+          : null,
+      );
+    },
+  );
 
   supabase.auth.getSession().then(({ data }) => {
     const user = data.session?.user;
@@ -47,15 +51,21 @@ export function onAuthChange(callback: (user: ClientAuthUser | null) => void): (
             id: user.id,
             email: user.email ?? null,
           }
-        : null
+        : null,
     );
   });
 
   return () => listener.subscription.unsubscribe();
 }
 
-export async function signInWithPassword(email: string, password: string): Promise<AuthActionResult> {
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+export async function signInWithPassword(
+  email: string,
+  password: string,
+): Promise<AuthActionResult> {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
   if (error) {
     throw error;
   }
@@ -67,7 +77,10 @@ export async function signInWithPassword(email: string, password: string): Promi
   };
 }
 
-export async function signUp(email: string, password: string): Promise<AuthActionResult> {
+export async function signUp(
+  email: string,
+  password: string,
+): Promise<AuthActionResult> {
   const { data, error } = await supabase.auth.signUp({ email, password });
   if (error) {
     throw error;
@@ -89,16 +102,21 @@ export async function getAccessToken(): Promise<string | null> {
   return data.session?.access_token ?? null;
 }
 
-export async function getAuthHeaders(extra: HeadersInit = {}): Promise<Headers> {
+export async function getAuthHeaders(
+  extra: HeadersInit = {},
+): Promise<Headers> {
   const headers = new Headers(extra);
   const token = await getAccessToken();
   if (token) {
-    headers.set("Authorization", `Bearer ${token}`);
+    headers.set('Authorization', `Bearer ${token}`);
   }
   return headers;
 }
 
-export async function authFetch(input: RequestInfo | URL, init: RequestInit = {}): Promise<Response> {
+export async function authFetch(
+  input: RequestInfo | URL,
+  init: RequestInit = {},
+): Promise<Response> {
   const headers = await getAuthHeaders(init.headers ?? {});
   return fetch(input, { ...init, headers });
 }
