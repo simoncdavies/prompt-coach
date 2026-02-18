@@ -18,11 +18,11 @@ const robotoMono = Roboto_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://prompt.dvlpr.co.uk"),
   title: {
-    default: "Prompt Coach | Refine AI Coding Prompts",
+    default: "Prompt Coach | Write Prompts That Get Better Code",
     template: "%s | Prompt Coach",
   },
   description:
-    "Prompt Coach helps you lint, analyze, and improve prompts so Claude, OpenAI, and Gemini return better code.",
+    "Paste your prompt and get clear feedback plus an improved version for Claude, OpenAI, and Gemini.",
   keywords: [
     "prompt engineering",
     "AI code generation",
@@ -60,9 +60,9 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "Prompt Coach | Refine AI Coding Prompts",
+    title: "Prompt Coach | Write Prompts That Get Better Code",
     description:
-      "Refine your AI coding prompts with structured linting, feedback, and examples for Claude, OpenAI, and Gemini.",
+      "Write clearer prompts and get better coding results with structured feedback and improved rewrites.",
     url: "/",
     siteName: "Prompt Coach",
     locale: "en_US",
@@ -78,9 +78,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Prompt Coach | Refine AI Coding Prompts",
+    title: "Prompt Coach | Write Prompts That Get Better Code",
     description:
-      "Improve AI coding responses by linting your prompts for Claude, OpenAI, and Gemini.",
+      "Paste your prompt, get practical feedback, and improve AI coding outputs across major models.",
     images: ["/og.png"],
   },
   robots: {

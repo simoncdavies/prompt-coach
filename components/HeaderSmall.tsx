@@ -95,7 +95,7 @@ const HeaderSmall = () => {
                         className="absolute right-0 top-0 h-full w-[min(90vw,22rem)] bg-white shadow-2xl border-l border-[#2D3A3A]/15 p-6"
                     >
                         <div className="flex items-center justify-between border-b border-[#2D3A3A]/15 pb-4">
-                            <h2 className="text-sm font-semibold uppercase tracking-wide text-[#2D3A3A]">Navigation</h2>
+                            <h2 className="text-sm font-semibold uppercase tracking-wide text-[#2D3A3A]">Menu</h2>
                             <button
                                 type="button"
                                 className="inline-flex items-center justify-center rounded-md border border-[#2D3A3A]/20 p-2 text-[#2D3A3A] hover:bg-[#2D3A3A]/5"
@@ -109,38 +109,38 @@ const HeaderSmall = () => {
                         <ul className="space-y-4 text-base text-[#040F0F] pt-6">
                             <li>
                                 <Link href="/#recent-prompts" onClick={() => setMenuOpen(false)} className="hover:text-[#248232]">
-                                    Recent Prompts
+                                    Recent analyses
                                 </Link>
                             </li>
                             <li>
                                 <Link href="/" onClick={() => setMenuOpen(false)} className="hover:text-[#248232]">
-                                    Enhancer
+                                    Prompt editor
                                 </Link>
                             </li>
                             {userEmail && (
                                 <li>
                                     <Link href="/search" onClick={() => setMenuOpen(false)} className="hover:text-[#248232]">
-                                        Search
+                                        Search history
                                     </Link>
                                 </li>
                             )}
                             {!userEmail && (
                                 <li>
                                     <Link href="/auth?returnTo=/" onClick={() => setMenuOpen(false)} className="hover:text-[#248232]">
-                                        Login/Register
+                                        Sign in / Create account
                                     </Link>
                                 </li>
                             )}
                             {userEmail && (
                                 <>
-                                    <li className="text-sm text-[#2D3A3A] break-all">Account: {userEmail}</li>
+                                    <li className="text-sm text-[#2D3A3A] break-all">Signed in as: {userEmail}</li>
                                     <li>
                                         <button
                                             type="button"
                                             onClick={logout}
                                             className="hover:text-[#248232]"
                                         >
-                                            Logout
+                                            Sign out
                                         </button>
                                     </li>
                                 </>

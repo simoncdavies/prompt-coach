@@ -17,17 +17,7 @@ interface PromptEditorProps {
 const DRAFT_KEY = "prompt-coach:draft";
 
 export function PromptEditor({ onSubmit, isLoading, initialPrompt = '', initialMetadata, helperText }: PromptEditorProps) {
-    const [prompt, setPrompt] = useState(() => {
-        if (initialPrompt) {
-            return initialPrompt;
-        }
-
-        if (typeof window === "undefined") {
-            return "";
-        }
-
-        return localStorage.getItem(DRAFT_KEY) ?? "";
-    });
+    const [prompt, setPrompt] = useState(initialPrompt || "");
     const [targetModel, setTargetModel] = useState<PromptMetadata['targetModel']>(initialMetadata?.targetModel || 'Gemini');
     const [outputStyle, setOutputStyle] = useState<PromptMetadata['outputStyle']>(initialMetadata?.outputStyle || 'plan + code + tests');
     const [verbosity, setVerbosity] = useState<PromptMetadata['verbosity']>(initialMetadata?.verbosity || 'normal');
@@ -37,6 +27,21 @@ export function PromptEditor({ onSubmit, isLoading, initialPrompt = '', initialM
     const isValid = prompt.length >= 10;
 
     useEffect(() => {
+        if (initialPrompt || typeof window === "undefined") {
+            return;
+        }
+
+        const savedDraft = localStorage.getItem(DRAFT_KEY);
+        if (savedDraft) {
+            setPrompt(savedDraft);
+        }
+    }, [initialPrompt]);
+
+    useEffect(() => {
+        if (typeof window === "undefined") {
+            return;
+        }
+
         localStorage.setItem(DRAFT_KEY, prompt);
     }, [prompt]);
 
@@ -55,12 +60,13 @@ export function PromptEditor({ onSubmit, isLoading, initialPrompt = '', initialM
             <CardContent className="p-6 space-y-4">
                 <div className="space-y-2">
                     <div className="flex justify-between items-center">
-                        <label className="text-sm font-medium text-[#040F0F]">Enter your Prompt</label>
-                        <span className="text-xs text-[#2D3A3A]/70">{prompt.length} chars</span>
+                        <label className="text-sm font-medium text-[#040F0F]">Your prompt</label>
+                        <span suppressHydrationWarning className="text-xs text-[#2D3A3A]/70">{prompt.length} characters</span>
                     </div>
                     <textarea
+                        suppressHydrationWarning
                         className="w-full h-64 p-4 rounded-lg border border-[#2D3A3A]/25 focus:ring-2 focus:ring-[#2BA84A] focus:border-transparent outline-none resize-none font-mono text-sm bg-[#FCFFFC]"
-                        placeholder="Paste your coding prompt here..."
+                        placeholder="Paste the prompt you want to improve..."
                         value={prompt}
                         onChange={(e) => setPrompt(e.target.value)}
                         disabled={isLoading}
@@ -70,7 +76,7 @@ export function PromptEditor({ onSubmit, isLoading, initialPrompt = '', initialM
                 {/* Controls Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
                     <div className="space-y-1">
-                        <label className="text-xs font-semibold text-[#2D3A3A] uppercase">Target AI</label>
+                        <label className="text-xs font-semibold text-[#2D3A3A] uppercase">AI model</label>
                         <select
                             className="w-full p-2 text-sm rounded-md border border-[#2D3A3A]/25 bg-white text-[#040F0F] focus:border-[#2BA84A] focus:outline-none"
                             value={targetModel}
@@ -82,7 +88,7 @@ export function PromptEditor({ onSubmit, isLoading, initialPrompt = '', initialM
                     </div>
 
                     <div className="space-y-1">
-                        <label className="text-xs font-semibold text-[#2D3A3A] uppercase">Output Style</label>
+                        <label className="text-xs font-semibold text-[#2D3A3A] uppercase">Response format</label>
                         <select
                             className="w-full p-2 text-sm rounded-md border border-[#2D3A3A]/25 bg-white text-[#040F0F] focus:border-[#2BA84A] focus:outline-none"
                             value={outputStyle}
@@ -94,7 +100,7 @@ export function PromptEditor({ onSubmit, isLoading, initialPrompt = '', initialM
                     </div>
 
                     <div className="space-y-1">
-                        <label className="text-xs font-semibold text-[#2D3A3A] uppercase">Verbosity</label>
+                        <label className="text-xs font-semibold text-[#2D3A3A] uppercase">Detail level</label>
                         <select
                             className="w-full p-2 text-sm rounded-md border border-[#2D3A3A]/25 bg-white text-[#040F0F] focus:border-[#2BA84A] focus:outline-none"
                             value={verbosity}
@@ -116,7 +122,7 @@ export function PromptEditor({ onSubmit, isLoading, initialPrompt = '', initialM
                                 onChange={(e) => setIsPublic(e.target.checked)}
                                 disabled={isLoading}
                             />
-                            <span className="text-sm text-[#2D3A3A]">Make Public (Anon)</span>
+                            <span className="text-sm text-[#2D3A3A]">Share publicly (without your email)</span>
                         </label>
                     </div>
 
@@ -124,7 +130,7 @@ export function PromptEditor({ onSubmit, isLoading, initialPrompt = '', initialM
                         {helperText ? <div className="text-xs text-[#2D3A3A]">{helperText}</div> : null}
                         <Button onClick={handleSubmit} disabled={!isValid || isLoading} size="lg">
                             <Wand2 className="mr-2 h-4 w-4" />
-                            Analyze Prompt
+                            Improve Prompt
                         </Button>
                     </div>
                 </div>

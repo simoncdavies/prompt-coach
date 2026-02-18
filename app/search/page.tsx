@@ -54,7 +54,7 @@ export default function SearchPage() {
       });
       const json = await res.json();
       if (!res.ok) {
-        throw new Error(json.error || "Failed to search prompt history");
+        throw new Error(json.error || "Could not load prompt history");
       }
       const nextRuns = (json.runs ?? []) as SearchRun[];
       setRuns((prev) => (replace ? nextRuns : [...prev, ...nextRuns]));
@@ -77,15 +77,15 @@ export default function SearchPage() {
       <HeaderSmall />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6">
         <div className="space-y-2">
-          <h1 className="text-3xl font-bold text-[#040F0F]">Search Prompt History</h1>
-          <p className="text-[#2D3A3A] text-sm">Browse beyond the public recent list in pages of 20.</p>
+          <h1 className="text-3xl font-bold text-[#040F0F]">Prompt History</h1>
+          <p className="text-[#2D3A3A] text-sm">Browse your saved reviews and public prompts, 20 at a time.</p>
         </div>
 
         {!authorized ? (
           <Card>
             <CardContent className="p-6 space-y-3">
-              <p className="text-sm text-[#2D3A3A]">Please login to access full prompt history search.</p>
-              <Button onClick={() => router.push("/auth?returnTo=/search")}>Login/Register</Button>
+              <p className="text-sm text-[#2D3A3A]">Sign in to view and search prompt history.</p>
+              <Button onClick={() => router.push("/auth?returnTo=/search")}>Sign in / Create account</Button>
             </CardContent>
           </Card>
         ) : (
@@ -99,7 +99,7 @@ export default function SearchPage() {
                 className="rounded border-[#2D3A3A]/40 text-[#2BA84A] focus:ring-[#2BA84A]"
               />
               <label htmlFor="onlyMine" className="text-sm text-[#2D3A3A]">
-                Only my prompts
+                Only show my prompts
               </label>
             </div>
 
@@ -115,7 +115,7 @@ export default function SearchPage() {
                   <CardHeader className="pb-2">
                     <div className="flex justify-between items-start">
                       <Badge variant={run.overall_score >= 8 ? "success" : run.overall_score >= 5 ? "warning" : "destructive"}>
-                        Score: {run.overall_score}/10
+                        Score {run.overall_score}/10
                       </Badge>
                       <span className="text-xs text-[#2D3A3A]/70">
                         {formatDateUTC(run.created_at)}
@@ -125,7 +125,7 @@ export default function SearchPage() {
                   <CardContent>
                     <p className="text-xs text-[#2D3A3A] line-clamp-3 font-mono mb-2">{run.prompt_original}</p>
                     <div className="flex justify-between items-center">
-                      <Badge variant="outline" className="text-[10px]">{run.metadata?.targetModel || "Unknown"}</Badge>
+                      <Badge variant="outline" className="text-[10px]">{run.metadata?.targetModel || "Not set"}</Badge>
                       <Badge variant={run.is_public ? "success" : "outline"} className="text-[10px]">
                         {run.is_public ? "Public" : "Private"}
                       </Badge>
@@ -138,7 +138,7 @@ export default function SearchPage() {
             {hasMore && (
               <div className="pt-2">
                 <Button onClick={() => fetchPage(page + 1)} isLoading={loading}>
-                  Load 20 more
+                  Load 20 more results
                 </Button>
               </div>
             )}

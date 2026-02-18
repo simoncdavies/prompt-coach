@@ -17,11 +17,11 @@ export function Footer() {
                             </span>
                         </div>
                         <p className="text-off-white/60 text-sm max-w-md leading-relaxed">
-                            Elevate your AI interactions with precision-crafted prompting tools.
-                            Built for developers, by <a href="https://dvlpr.co.uk" target="_blank" rel="noopener noreferrer" className="font-mono font-bold leading-none tracking-tighter text-bright-green group no-underline"><span className="group-hover:underline">dvlpr</span><span className="animate-pulse">&gt;_</span></a>.
+                            Write clearer prompts and get better coding results from AI.
+                            Built for developers by <a href="https://dvlpr.co.uk" target="_blank" rel="noopener noreferrer" className="font-mono font-bold leading-none tracking-tighter text-bright-green group no-underline"><span className="group-hover:underline">dvlpr</span><span className="animate-pulse">&gt;_</span></a>.
                         </p>
                         <p className="text-off-white/40 text-xs">
-                            © 2025 <a href="https://dvlpr.co.uk" target="_blank" rel="noopener noreferrer" className="font-mono font-bold leading-none tracking-tighter text-bright-green group no-underline"><span className="group-hover:underline">dvlpr</span><span className="animate-pulse">&gt;_</span></a>. All rights reserved.
+                            © 2026 <a href="https://dvlpr.co.uk" target="_blank" rel="noopener noreferrer" className="font-mono font-bold leading-none tracking-tighter text-bright-green group no-underline"><span className="group-hover:underline">dvlpr</span><span className="animate-pulse">&gt;_</span></a>. All rights reserved.
                         </p>
                     </div>
 
@@ -49,7 +49,7 @@ export function Footer() {
 
                         <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-off-white/5 border border-off-white/10">
                             <div className="w-2 h-2 rounded-full bg-bright-green animate-pulse" />
-                            <span className="text-[10px] uppercase tracking-widest text-off-white/60 font-medium">System Operational</span>
+                            <span className="text-[10px] uppercase tracking-widest text-off-white/60 font-medium">All systems running</span>
                         </div>
                     </div>
                 </div>

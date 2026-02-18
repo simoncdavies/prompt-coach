@@ -18,8 +18,8 @@ export function AuthModal({
   open,
   onClose,
   onSuccess,
-  title = "Authentication required",
-  description = "Enhancing prompts requires an account.",
+  title = "Sign in required",
+  description = "Sign in to improve and save prompts.",
 }: AuthModalProps) {
   const [mode, setMode] = useState<"login" | "register">("login");
   const [email, setEmail] = useState("");
@@ -47,7 +47,7 @@ export function AuthModal({
       }
 
       if (result.needsEmailConfirmation) {
-        setMessage(`Account created for ${result.email}. Check your email to confirm, then log in.`);
+        setMessage(`Account created for ${result.email}. Check your inbox to confirm your email, then sign in.`);
         setMode("login");
         setPassword("");
         return;
@@ -56,7 +56,7 @@ export function AuthModal({
       onSuccess?.();
       onClose();
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Authentication failed";
+      const message = err instanceof Error ? err.message : "Sign in failed";
       setError(message);
     } finally {
       setLoading(false);
@@ -86,14 +86,14 @@ export function AuthModal({
               onClick={() => setMode("login")}
               className={`px-3 py-2 text-sm rounded-md border ${mode === "login" ? "bg-[#2BA84A] text-white border-[#2BA84A]" : "border-[#2D3A3A]/20 text-[#2D3A3A]"}`}
             >
-              Login
+              Sign in
             </button>
             <button
               type="button"
               onClick={() => setMode("register")}
               className={`px-3 py-2 text-sm rounded-md border ${mode === "register" ? "bg-[#2BA84A] text-white border-[#2BA84A]" : "border-[#2D3A3A]/20 text-[#2D3A3A]"}`}
             >
-              Register
+              Create account
             </button>
           </div>
 
@@ -101,7 +101,7 @@ export function AuthModal({
             <input
               type="email"
               required
-              placeholder="Email"
+              placeholder="Email address"
               className="w-full rounded-md border border-[#2D3A3A]/30 p-2 text-sm"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -110,7 +110,7 @@ export function AuthModal({
               type="password"
               required
               minLength={6}
-              placeholder="Password"
+              placeholder="Password (6+ characters)"
               className="w-full rounded-md border border-[#2D3A3A]/30 p-2 text-sm"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -120,7 +120,7 @@ export function AuthModal({
             {message && <p className="text-sm text-[#248232]">{message}</p>}
 
             <Button type="submit" disabled={loading} className="w-full">
-              {loading ? "Please wait..." : mode === "login" ? "Login" : "Create account"}
+              {loading ? "Please wait..." : mode === "login" ? "Sign in" : "Create account"}
             </Button>
           </form>
         </CardContent>

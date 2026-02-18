@@ -10,11 +10,12 @@ export function formatDateUTC(isoDate: string): string {
     if (Number.isNaN(d.getTime())) {
         return '';
     }
-
-    const year = d.getUTCFullYear();
-    const month = String(d.getUTCMonth() + 1).padStart(2, '0');
-    const day = String(d.getUTCDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    return new Intl.DateTimeFormat('en-GB', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+        timeZone: 'UTC',
+    }).format(d);
 }
 
 // Basic regex for common API key patterns (OpenAI, GitHub, Stripeish, generics)

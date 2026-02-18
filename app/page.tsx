@@ -74,12 +74,12 @@ export default function Home() {
         if (res.status === 401) {
           setPendingRequest(request);
           setShowAuthModal(true);
-          throw new Error('Please sign in to enhance prompts.');
+          throw new Error('Please sign in to improve your prompt.');
         }
         if (res.status === 429) {
           trackEvent('enhancer_quota_blocked', { limit: json?.quota?.limit ?? 5 });
           throw new Error(
-            'You have reached 5/5 free enhancements this month. Upgrade: £10 for 200/month or £20 for 500/month.'
+            'You have used all 5 free prompt improvements this month. Upgrade for higher monthly limits.'
           );
         }
         throw new Error(json.error || 'Something went wrong');
@@ -104,8 +104,9 @@ export default function Home() {
     const token = await getAccessToken();
     if (!token) {
       setPendingRequest(request);
+      setPendingViewRunId(null);
       setShowAuthModal(true);
-      setError('Enhancement requires an account. Login or register to continue.');
+      setError('You need an account to improve prompts. Sign in or create one to continue.');
       trackEvent('enhancer_auth_gate_shown');
       return;
     }
@@ -116,12 +117,16 @@ export default function Home() {
   const handleAuthSuccess = async () => {
     trackEvent('enhancer_auth_conversion');
     await fetchQuota();
-    if (!pendingRequest) {
+    const token = await getAccessToken();
+    if (!token) {
       return;
     }
 
-    const token = await getAccessToken();
-    if (!token) {
+    const runId = pendingViewRunId;
+    if (runId) {
+      setPendingViewRunId(null);
+      setPendingRequest(null);
+      router.push(`/prompt/${runId}`);
       return;
     }
 
@@ -131,26 +136,21 @@ export default function Home() {
       await runEnhancer(request);
       return;
     }
-
-    if (pendingViewRunId) {
-      const runId = pendingViewRunId;
-      setPendingViewRunId(null);
-      router.push(`/prompt/${runId}`);
-    }
   };
 
   const quotaHelper = isSignedIn
     ? quota
       ? quota.is_unlimited
         ? 'Unlimited plan active.'
-        : `Usage: ${quota.used}/${quota.limit} this cycle. ${quota.remaining} left.`
-      : 'Checking quota...'
-    : 'Enhancement requires login/register. Free tier: 5 per month.';
+        : `This month: ${quota.used}/${quota.limit} used. ${quota.remaining} remaining.`
+      : 'Checking your usage...'
+    : 'Sign in to save and improve prompts. Free plan includes 5 improvements per month.';
 
   const handleSelectRun = async (id: string) => {
     const token = await getAccessToken();
     if (!token) {
       setPendingViewRunId(id);
+      setPendingRequest(null);
       setShowAuthModal(true);
       return;
     }
@@ -161,14 +161,14 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#FCFFFC]">
       <HeaderSmall />
-      {loading && <LoadingModal message="Analyzing your prompt..." />}
+      {loading && <LoadingModal message="Reviewing your prompt and preparing suggestions..." />}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
         {/* Hero / Input */}
         <section className="space-y-6 max-w-4xl mx-auto">
           <div className="text-center space-y-2">
-            <h2 className="text-3xl font-bold text-[#040F0F]">Refine your AI Coding Prompts</h2>
-            <p className="text-[#2D3A3A]">Get better code from Claude, OpenAI, and Gemini by linting your prompt first.</p>
+            <h2 className="text-3xl font-bold text-[#040F0F]">Write prompts that get better code</h2>
+            <p className="text-[#2D3A3A]">Paste your prompt, then get clear feedback and an improved version for Claude, OpenAI, or Gemini.</p>
           </div>
 
           <PromptEditor
@@ -180,7 +180,7 @@ export default function Home() {
 
           {error && (
             <div className="p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm text-center">
-              Error: {error}
+              {error}
             </div>
           )}
         </section>

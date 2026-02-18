@@ -6,7 +6,7 @@ interface LoadingModalProps {
     message?: string;
 }
 
-export function LoadingModal({ message = "Analyzing your prompt..." }: LoadingModalProps) {
+export function LoadingModal({ message = "Reviewing your prompt and preparing suggestions..." }: LoadingModalProps) {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
             <div className="relative h-56 w-[min(90vw,28rem)] overflow-hidden rounded-2xl border border-[#2D3A3A]/20 shadow-xl">

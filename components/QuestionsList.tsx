@@ -9,7 +9,7 @@ export function QuestionsList({ questions }: { questions: string[] }) {
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                     <HelpCircle className="h-5 w-5 text-[#2BA84A]" />
-                    Clarifying Questions
+                    Questions To Sharpen Your Prompt
                 </CardTitle>
             </CardHeader>
             <CardContent>

@@ -85,12 +85,12 @@ export function ScoreCard({ result }: { result: AnalyzerResult }) {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Analysis Score</CardTitle>
+                <CardTitle>Prompt Score</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
                 <div className="flex flex-col items-center justify-center space-y-2">
                     <div className={cn("text-4xl font-bold", overallColor)}>{overall_score}/10</div>
-                    <p className="text-sm text-[#2D3A3A]/80">Overall Quality</p>
+                    <p className="text-sm text-[#2D3A3A]/80">Overall Prompt Quality</p>
                 </div>
 
                 <div className="space-y-4 pt-4 border-t border-[#2D3A3A]/15">

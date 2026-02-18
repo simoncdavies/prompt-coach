@@ -23,7 +23,7 @@ export function RewriteBox({ result }: { result: RewriterResult }) {
         <Card className="flex flex-col h-full">
             <CardHeader className="border-b border-[#2D3A3A]/15">
                 <div className="flex items-center justify-between">
-                    <CardTitle>Optimized Prompt</CardTitle>
+                    <CardTitle>Your Improved Prompt</CardTitle>
                     <div className="flex space-x-1 bg-[#2D3A3A]/10 p-1 rounded-lg">
                         <button
                             onClick={() => setActiveTab('improved')}
@@ -33,7 +33,7 @@ export function RewriteBox({ result }: { result: RewriterResult }) {
                             )}
                         >
                             <FileText className="h-3 w-3" />
-                            Improved
+                            Detailed
                         </button>
                         <button
                             onClick={() => setActiveTab('minimal')}
@@ -43,7 +43,7 @@ export function RewriteBox({ result }: { result: RewriterResult }) {
                             )}
                         >
                             <Zap className="h-3 w-3" />
-                            Minimal
+                            Quick
                         </button>
                     </div>
                 </div>
@@ -57,7 +57,7 @@ export function RewriteBox({ result }: { result: RewriterResult }) {
                 <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
                     <Button size="sm" variant="secondary" onClick={handleCopy}>
                         {copied ? <Check className="h-4 w-4 mr-2" /> : <Copy className="h-4 w-4 mr-2" />}
-                        {copied ? 'Copied' : 'Copy'}
+                        {copied ? 'Copied' : 'Copy text'}
                     </Button>
                 </div>
             </CardContent>

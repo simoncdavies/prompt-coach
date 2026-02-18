@@ -75,7 +75,7 @@ export function RecentRuns({ onSelect }: RecentRunsProps) {
 
     return (
         <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-[#2D3A3A] uppercase tracking-wide">Recent Prompts</h3>
+            <h3 className="text-sm font-semibold text-[#2D3A3A] uppercase tracking-wide">Recent Analyses</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {runs.map(run => (
                     <Card
@@ -86,7 +86,7 @@ export function RecentRuns({ onSelect }: RecentRunsProps) {
                         <CardHeader className="pb-2">
                             <div className="flex justify-between items-start">
                                 <Badge variant={run.overall_score >= 8 ? 'success' : run.overall_score >= 5 ? 'warning' : 'destructive'}>
-                                    Score: {run.overall_score}/10
+                                    Score {run.overall_score}/10
                                 </Badge>
                                 <span className="text-xs text-[#2D3A3A]/70">
                                     {formatDateUTC(run.created_at)}
@@ -99,7 +99,7 @@ export function RecentRuns({ onSelect }: RecentRunsProps) {
                             </p>
                             <div className="flex justify-between items-center">
                                 <Badge variant="outline" className="text-[10px]">{run.metadata.targetModel}</Badge>
-                                <span className="text-[10px] text-[#2BA84A] opacity-0 group-hover:opacity-100 transition-opacity font-medium">Click to view →</span>
+                                <span className="text-[10px] text-[#2BA84A] opacity-0 group-hover:opacity-100 transition-opacity font-medium">Open result →</span>
                             </div>
                         </CardContent>
                     </Card>

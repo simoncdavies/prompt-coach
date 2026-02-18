@@ -33,7 +33,7 @@ function AuthPageContent() {
       }
 
       if (result.needsEmailConfirmation) {
-        setMessage(`Account created for ${result.email}. Please check your email to confirm your account before logging in.`);
+        setMessage(`Account created for ${result.email}. Check your inbox to confirm your email, then sign in.`);
         setMode("login");
         setPassword("");
         return;
@@ -41,7 +41,7 @@ function AuthPageContent() {
 
       router.push(returnTo);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Authentication failed";
+      const message = err instanceof Error ? err.message : "Sign in failed";
       setError(message);
     } finally {
       setLoading(false);
@@ -54,8 +54,8 @@ function AuthPageContent() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <Card className="max-w-md mx-auto">
           <CardContent className="p-6 space-y-4">
-            <h1 className="text-xl font-semibold text-[#040F0F]">Account</h1>
-            <p className="text-sm text-[#2D3A3A]">Login or register to use Prompt Coach enhancer features.</p>
+            <h1 className="text-xl font-semibold text-[#040F0F]">Sign in to Prompt Coach</h1>
+            <p className="text-sm text-[#2D3A3A]">Create an account or sign in to improve, save, and revisit prompts.</p>
 
             <div className="flex gap-2">
               <button
@@ -63,14 +63,14 @@ function AuthPageContent() {
                 onClick={() => setMode("login")}
                 className={`px-3 py-2 text-sm rounded-md border ${mode === "login" ? "bg-[#2BA84A] text-white border-[#2BA84A]" : "border-[#2D3A3A]/20 text-[#2D3A3A]"}`}
               >
-                Login
+                Sign in
               </button>
               <button
                 type="button"
                 onClick={() => setMode("register")}
                 className={`px-3 py-2 text-sm rounded-md border ${mode === "register" ? "bg-[#2BA84A] text-white border-[#2BA84A]" : "border-[#2D3A3A]/20 text-[#2D3A3A]"}`}
               >
-                Register
+                Create account
               </button>
             </div>
 
@@ -78,7 +78,7 @@ function AuthPageContent() {
               <input
                 type="email"
                 required
-                placeholder="Email"
+                placeholder="Email address"
                 className="w-full rounded-md border border-[#2D3A3A]/30 p-2 text-sm"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -87,7 +87,7 @@ function AuthPageContent() {
                 type="password"
                 required
                 minLength={6}
-                placeholder="Password"
+                placeholder="Password (6+ characters)"
                 className="w-full rounded-md border border-[#2D3A3A]/30 p-2 text-sm"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -97,7 +97,7 @@ function AuthPageContent() {
               {message && <p className="text-sm text-[#248232]">{message}</p>}
 
               <Button type="submit" className="w-full" isLoading={loading}>
-                {mode === "login" ? "Login" : "Create account"}
+                {mode === "login" ? "Sign in" : "Create account"}
               </Button>
             </form>
           </CardContent>
