@@ -7,6 +7,7 @@ import { HeaderSmall } from '@/components/HeaderSmall';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader } from '@/components/ui/Card';
+import { AnalyticsEvent, trackEvent } from '@/lib/analytics';
 import { getAccessToken, getAuthHeaders } from '@/lib/auth/client';
 import { formatDateUTC } from '@/lib/utils';
 
@@ -92,7 +93,15 @@ export default function SearchPage() {
               <p className="text-sm text-[#2D3A3A]">
                 Sign in to view and search prompt history.
               </p>
-              <Button onClick={() => router.push('/auth?returnTo=/search')}>
+              <Button
+                onClick={() => {
+                  trackEvent(AnalyticsEvent.SearchAuthCtaClicked, {
+                    source: 'search_page',
+                    href: '/auth?returnTo=/search',
+                  });
+                  router.push('/auth?returnTo=/search');
+                }}
+              >
                 Sign in / Create account
               </Button>
             </CardContent>
@@ -104,7 +113,13 @@ export default function SearchPage() {
                 id="onlyMine"
                 type="checkbox"
                 checked={onlyMine}
-                onChange={(e) => setOnlyMine(e.target.checked)}
+                onChange={(e) => {
+                  trackEvent(AnalyticsEvent.SearchFilterChanged, {
+                    source: 'search_page',
+                    onlyMine: e.target.checked,
+                  });
+                  setOnlyMine(e.target.checked);
+                }}
                 className="rounded border-[#2D3A3A]/40 text-[#2BA84A] focus:ring-[#2BA84A]"
               />
               <label htmlFor="onlyMine" className="text-sm text-[#2D3A3A]">
@@ -119,7 +134,15 @@ export default function SearchPage() {
                 <Card
                   key={run.id}
                   className="hover:shadow-md transition-all cursor-pointer border-[#2D3A3A]/20 hover:border-[#2BA84A] group"
-                  onClick={() => router.push(`/prompt/${run.id}`)}
+                  onClick={() => {
+                    trackEvent(AnalyticsEvent.SearchResultOpened, {
+                      source: 'search_page',
+                      runId: run.id,
+                      page,
+                      onlyMine,
+                    });
+                    router.push(`/prompt/${run.id}`);
+                  }}
                 >
                   <CardHeader className="pb-2">
                     <div className="flex justify-between items-start">
@@ -161,7 +184,17 @@ export default function SearchPage() {
 
             {hasMore && (
               <div className="pt-2">
-                <Button onClick={() => fetchPage(page + 1)} isLoading={loading}>
+                <Button
+                  onClick={() => {
+                    trackEvent(AnalyticsEvent.SearchLoadMoreClicked, {
+                      source: 'search_page',
+                      fromPage: page,
+                      onlyMine,
+                    });
+                    fetchPage(page + 1);
+                  }}
+                  isLoading={loading}
+                >
                   Load 20 more results
                 </Button>
               </div>

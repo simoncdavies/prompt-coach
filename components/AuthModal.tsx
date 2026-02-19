@@ -1,9 +1,10 @@
 'use client';
 
 import { X } from 'lucide-react';
-import { type FormEvent, useState } from 'react';
+import { type FormEvent, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent } from '@/components/ui/Card';
+import { AnalyticsEvent, trackEvent } from '@/lib/analytics';
 import {
   type AuthActionResult,
   signInWithPassword,
@@ -32,19 +33,36 @@ export function AuthModal({
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    trackEvent(AnalyticsEvent.AuthModalShown, {
+      source: 'auth_modal',
+    });
+  }, [open]);
+
   if (!open) {
     return null;
   }
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
+    const modeAtSubmit = mode;
+    trackEvent(
+      modeAtSubmit === 'register'
+        ? AnalyticsEvent.AuthCreateAccountSubmit
+        : AnalyticsEvent.AuthSignInSubmit,
+      { source: 'auth_modal' },
+    );
     setError(null);
     setMessage(null);
     setLoading(true);
 
     try {
       const result: AuthActionResult =
-        mode === 'register'
+        modeAtSubmit === 'register'
           ? await signUp(email, password)
           : await signInWithPassword(email, password);
 
@@ -57,10 +75,25 @@ export function AuthModal({
         return;
       }
 
+      trackEvent(
+        modeAtSubmit === 'register'
+          ? AnalyticsEvent.AuthCreateAccountSuccess
+          : AnalyticsEvent.AuthSignInSuccess,
+        { source: 'auth_modal' },
+      );
       onSuccess?.();
       onClose();
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Sign in failed';
+      trackEvent(
+        modeAtSubmit === 'register'
+          ? AnalyticsEvent.AuthCreateAccountFailed
+          : AnalyticsEvent.AuthSignInFailed,
+        {
+          source: 'auth_modal',
+          error: message,
+        },
+      );
       setError(message);
     } finally {
       setLoading(false);

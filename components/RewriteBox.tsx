@@ -2,6 +2,7 @@
 
 import { Check, Copy, FileText, Zap } from 'lucide-react';
 import { useState } from 'react';
+import { AnalyticsEvent, trackEvent } from '@/lib/analytics';
 import type { RewriterResult } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { Button } from './ui/Button';
@@ -16,8 +17,24 @@ export function RewriteBox({ result }: { result: RewriterResult }) {
   const content =
     activeTab === 'improved' ? result.revised_prompt : result.minimal_prompt;
 
+  const handleTabChange = (nextTab: 'improved' | 'minimal') => {
+    if (nextTab === activeTab) {
+      return;
+    }
+    setActiveTab(nextTab);
+    trackEvent(AnalyticsEvent.RewriteTabChanged, {
+      source: 'rewrite_box',
+      tab: nextTab,
+    });
+  };
+
   const handleCopy = () => {
     navigator.clipboard.writeText(content);
+    trackEvent(AnalyticsEvent.RewriteCopied, {
+      source: 'rewrite_box',
+      tab: activeTab,
+      contentLength: content.length,
+    });
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -30,7 +47,7 @@ export function RewriteBox({ result }: { result: RewriterResult }) {
           <div className="flex space-x-1 bg-[#2D3A3A]/10 p-1 rounded-lg">
             <button
               type="button"
-              onClick={() => setActiveTab('improved')}
+              onClick={() => handleTabChange('improved')}
               className={cn(
                 'px-3 py-1 text-xs font-medium rounded-md transition-all flex items-center gap-2',
                 activeTab === 'improved'
@@ -43,7 +60,7 @@ export function RewriteBox({ result }: { result: RewriterResult }) {
             </button>
             <button
               type="button"
-              onClick={() => setActiveTab('minimal')}
+              onClick={() => handleTabChange('minimal')}
               className={cn(
                 'px-3 py-1 text-xs font-medium rounded-md transition-all flex items-center gap-2',
                 activeTab === 'minimal'

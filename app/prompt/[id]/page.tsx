@@ -10,6 +10,7 @@ import { QuestionsList } from '@/components/QuestionsList';
 import { RecentRuns } from '@/components/RecentRuns';
 import { RewriteBox } from '@/components/RewriteBox';
 import { ScoreCard } from '@/components/ScoreCard';
+import { AnalyticsEvent, trackEvent } from '@/lib/analytics';
 import { getAccessToken, getAuthHeaders } from '@/lib/auth/client';
 import type { RunResponse } from '@/lib/types';
 
@@ -49,6 +50,10 @@ export default function PromptView({
           return;
         }
         if (!res.ok) throw new Error(json.error || 'Failed to fetch run');
+        trackEvent(AnalyticsEvent.SavedPromptViewed, {
+          source: 'prompt_page',
+          runId: id,
+        });
         setData(json);
       } catch (err: unknown) {
         const message =
@@ -65,6 +70,10 @@ export default function PromptView({
   }, [id]);
 
   const handleSelectRun = async (selectedId: string) => {
+    trackEvent(AnalyticsEvent.SavedPromptOpenClicked, {
+      source: 'prompt_page_recent_runs',
+      runId: selectedId,
+    });
     const token = await getAccessToken();
     if (!token) {
       setPendingViewRunId(selectedId);

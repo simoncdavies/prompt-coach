@@ -1,7 +1,11 @@
 import type { Metadata } from 'next';
 import { Roboto_Mono, Space_Grotesk } from 'next/font/google';
-import { GoogleAnalytics } from '@/components/analytics/google-analytics';
+import { GoogleAnalytics } from '@/components/analytics/googleAnalytics';
+import { GoogleTagManager } from '@/components/analytics/googleTagManager';
+import CookiesBanner from '@/components/CookieBanner';
 import '../styles/globals.css';
+
+const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -99,8 +103,9 @@ export default function RootLayout({
       <body
         className={`${spaceGrotesk.variable} ${robotoMono.variable} antialiased`}
       >
-        <GoogleAnalytics />
+        {gtmId ? <GoogleTagManager /> : <GoogleAnalytics />}
         {children}
+        <CookiesBanner />
       </body>
     </html>
   );

@@ -8,7 +8,7 @@ import { HeaderSmall } from '@/components/HeaderSmall';
 import { LoadingModal } from '@/components/LoadingModal';
 import { PromptEditor } from '@/components/PromptEditor';
 import { RecentRuns } from '@/components/RecentRuns';
-import { trackEvent } from '@/lib/analytics';
+import { AnalyticsEvent, trackEvent } from '@/lib/analytics';
 import {
   type ClientAuthUser,
   getAccessToken,
@@ -84,7 +84,7 @@ export default function Home() {
           throw new Error('Please sign in to improve your prompt.');
         }
         if (res.status === 429) {
-          trackEvent('enhancer_quota_blocked', {
+          trackEvent(AnalyticsEvent.EnhancerQuotaBlocked, {
             limit: json?.quota?.limit ?? 5,
           });
           throw new Error(
@@ -94,7 +94,7 @@ export default function Home() {
         throw new Error(json.error || 'Something went wrong');
       }
 
-      trackEvent('enhancer_attempt_allowed', {
+      trackEvent(AnalyticsEvent.PromptEnhancementCreated, {
         targetModel: request.metadata.targetModel,
       });
 
@@ -120,7 +120,7 @@ export default function Home() {
       setError(
         'You need an account to improve prompts. Sign in or create one to continue.',
       );
-      trackEvent('enhancer_auth_gate_shown');
+      trackEvent(AnalyticsEvent.EnhancerAuthGateShown);
       return;
     }
 
@@ -128,7 +128,7 @@ export default function Home() {
   };
 
   const handleAuthSuccess = async () => {
-    trackEvent('enhancer_auth_conversion');
+    trackEvent(AnalyticsEvent.EnhancerAuthConversion);
     await fetchQuota();
     const token = await getAccessToken();
     if (!token) {
@@ -160,6 +160,10 @@ export default function Home() {
     : 'Sign in to save and improve prompts. Free plan includes 5 improvements per month.';
 
   const handleSelectRun = async (id: string) => {
+    trackEvent(AnalyticsEvent.SavedPromptOpenClicked, {
+      source: 'home_recent_runs',
+      runId: id,
+    });
     const token = await getAccessToken();
     if (!token) {
       setPendingViewRunId(id);

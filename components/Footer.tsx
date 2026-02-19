@@ -1,6 +1,15 @@
 'use client';
 
 import { FaInstagram, FaLinkedin } from 'react-icons/fa6';
+import { AnalyticsEvent, trackEvent } from '@/lib/analytics';
+
+function trackFooterLinkClick(href: string, label: string) {
+  trackEvent(AnalyticsEvent.FooterLinkClick, {
+    href,
+    label,
+    location: 'footer',
+  });
+}
 
 export function Footer() {
   return (
@@ -24,6 +33,12 @@ export function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-mono font-bold leading-none tracking-tighter text-bright-green group no-underline"
+                onClick={() =>
+                  trackFooterLinkClick(
+                    'https://dvlpr.co.uk',
+                    'dvlpr_brand_link',
+                  )
+                }
               >
                 <span className="group-hover:underline">dvlpr</span>
                 <span className="animate-pulse">&gt;_</span>
@@ -37,6 +52,12 @@ export function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-mono font-bold leading-none tracking-tighter text-bright-green group no-underline"
+                onClick={() =>
+                  trackFooterLinkClick(
+                    'https://dvlpr.co.uk',
+                    'dvlpr_copyright_link',
+                  )
+                }
               >
                 <span className="group-hover:underline">dvlpr</span>
                 <span className="animate-pulse">&gt;_</span>
@@ -53,6 +74,12 @@ export function Footer() {
                 rel="noopener noreferrer"
                 className="group p-3 rounded-xl bg-off-white/5 border border-off-white/10 text-off-white hover:border-bright-green/50 hover:bg-bright-green/5 transition-all duration-300"
                 aria-label="Visit DVLPR on LinkedIn"
+                onClick={() =>
+                  trackFooterLinkClick(
+                    'https://www.linkedin.com/company/dvlpr-ltd/',
+                    'linkedin',
+                  )
+                }
               >
                 <FaLinkedin className="w-6 h-6 group-hover:scale-110 transition-transform text-off-white/80 group-hover:text-bright-green" />
               </a>
@@ -62,6 +89,12 @@ export function Footer() {
                 rel="noopener noreferrer"
                 className="group p-3 rounded-xl bg-off-white/5 border border-off-white/10 text-off-white hover:border-bright-green/50 hover:bg-bright-green/5 transition-all duration-300"
                 aria-label="Visit DVLPR on Instagram"
+                onClick={() =>
+                  trackFooterLinkClick(
+                    'https://www.instagram.com/dvlpr.ltd/',
+                    'instagram',
+                  )
+                }
               >
                 <FaInstagram className="w-6 h-6 group-hover:scale-110 transition-transform text-off-white/80 group-hover:text-bright-green" />
               </a>

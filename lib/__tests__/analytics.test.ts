@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { trackEvent } from '@/lib/analytics';
+import { AnalyticsEvent, trackEvent } from '@/lib/analytics';
 
 describe('trackEvent', () => {
   it('does nothing when gtag is unavailable', () => {
@@ -16,9 +16,9 @@ describe('trackEvent', () => {
     const gtag = vi.fn();
     (window as typeof window & { gtag?: typeof gtag }).gtag = gtag;
 
-    trackEvent('prompt_submitted', { source: 'ui' });
+    trackEvent(AnalyticsEvent.PromptEnhancementCreated, { source: 'ui' });
 
-    expect(gtag).toHaveBeenCalledWith('event', 'prompt_submitted', {
+    expect(gtag).toHaveBeenCalledWith('event', 'prompt_enhancement_created', {
       source: 'ui',
     });
   });

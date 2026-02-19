@@ -6,6 +6,7 @@ import { Footer } from '@/components/Footer';
 import { HeaderSmall } from '@/components/HeaderSmall';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent } from '@/components/ui/Card';
+import { AnalyticsEvent, trackEvent } from '@/lib/analytics';
 import {
   type AuthActionResult,
   signInWithPassword,
@@ -25,12 +26,19 @@ function AuthPageContent() {
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
+    const modeAtSubmit = mode;
+    trackEvent(
+      modeAtSubmit === 'register'
+        ? AnalyticsEvent.AuthCreateAccountSubmit
+        : AnalyticsEvent.AuthSignInSubmit,
+      { source: 'auth_page' },
+    );
     setLoading(true);
     setError(null);
     setMessage(null);
     try {
       const result: AuthActionResult =
-        mode === 'register'
+        modeAtSubmit === 'register'
           ? await signUp(email, password)
           : await signInWithPassword(email, password);
 
@@ -43,9 +51,24 @@ function AuthPageContent() {
         return;
       }
 
+      trackEvent(
+        modeAtSubmit === 'register'
+          ? AnalyticsEvent.AuthCreateAccountSuccess
+          : AnalyticsEvent.AuthSignInSuccess,
+        { source: 'auth_page' },
+      );
       router.push(returnTo);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Sign in failed';
+      trackEvent(
+        modeAtSubmit === 'register'
+          ? AnalyticsEvent.AuthCreateAccountFailed
+          : AnalyticsEvent.AuthSignInFailed,
+        {
+          source: 'auth_page',
+          error: message,
+        },
+      );
       setError(message);
     } finally {
       setLoading(false);

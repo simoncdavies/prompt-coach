@@ -16,7 +16,7 @@ export function GoogleAnalytics() {
       <Script id="google-analytics" strategy="afterInteractive">
         {`
           window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
+          window.gtag = window.gtag || function(){window.dataLayer.push(arguments);}
           gtag('js', new Date());
           gtag('config', '${measurementId}', {
             anonymize_ip: true,

@@ -4,6 +4,7 @@ import { Code2, Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { AnalyticsEvent, trackEvent } from '@/lib/analytics';
 import { onAuthChange, signOut } from '@/lib/auth/client';
 import { LetterGlitch } from './LetterGlitch';
 
@@ -40,9 +41,21 @@ const HeaderSmall = () => {
   }, [menuOpen]);
 
   const logout = async () => {
+    trackEvent(AnalyticsEvent.MenuSignOutClick, {
+      location: 'header_menu',
+      label: 'sign_out',
+    });
     await signOut();
     setMenuOpen(false);
     router.push('/');
+  };
+
+  const trackMenuLinkClick = (href: string, label: string) => {
+    trackEvent(AnalyticsEvent.MenuLinkClick, {
+      href,
+      label,
+      location: 'header_menu',
+    });
   };
 
   return (
@@ -68,6 +81,7 @@ const HeaderSmall = () => {
           <Link
             href="/"
             className="flex items-center gap-2 hover:opacity-90 transition-opacity group"
+            onClick={() => trackMenuLinkClick('/', 'brand_home')}
           >
             <div className="bg-[#2BA84A] p-2 rounded-lg text-[#FCFFFC] shadow-md shadow-[#2BA84A]/30">
               <Code2 className="h-5 w-5" />
@@ -132,7 +146,10 @@ const HeaderSmall = () => {
               <li>
                 <Link
                   href="/#recent-prompts"
-                  onClick={() => setMenuOpen(false)}
+                  onClick={() => {
+                    trackMenuLinkClick('/#recent-prompts', 'recent_analyses');
+                    setMenuOpen(false);
+                  }}
                   className="hover:text-[#248232]"
                 >
                   Recent analyses
@@ -141,7 +158,10 @@ const HeaderSmall = () => {
               <li>
                 <Link
                   href="/"
-                  onClick={() => setMenuOpen(false)}
+                  onClick={() => {
+                    trackMenuLinkClick('/', 'prompt_editor');
+                    setMenuOpen(false);
+                  }}
                   className="hover:text-[#248232]"
                 >
                   Prompt editor
@@ -151,7 +171,10 @@ const HeaderSmall = () => {
                 <li>
                   <Link
                     href="/search"
-                    onClick={() => setMenuOpen(false)}
+                    onClick={() => {
+                      trackMenuLinkClick('/search', 'search_history');
+                      setMenuOpen(false);
+                    }}
                     className="hover:text-[#248232]"
                   >
                     Search history
@@ -162,7 +185,15 @@ const HeaderSmall = () => {
                 <li>
                   <Link
                     href="/auth?returnTo=/"
-                    onClick={() => setMenuOpen(false)}
+                    onClick={() => {
+                      trackEvent(AnalyticsEvent.MenuSignInClick, {
+                        location: 'header_menu',
+                        label: 'sign_in',
+                        href: '/auth?returnTo=/',
+                      });
+                      trackMenuLinkClick('/auth?returnTo=/', 'sign_in');
+                      setMenuOpen(false);
+                    }}
                     className="hover:text-[#248232]"
                   >
                     Sign in / Create account
