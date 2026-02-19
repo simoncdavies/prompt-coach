@@ -3,7 +3,7 @@
 import { Code2, Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AnalyticsEvent, trackEvent } from '@/lib/analytics';
 import { onAuthChange, signOut } from '@/lib/auth/client';
 import { LetterGlitch } from '../LetterGlitch';
@@ -11,6 +11,8 @@ import { LetterGlitch } from '../LetterGlitch';
 const HeaderSmall = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const menuPanelRef = useRef<HTMLElement | null>(null);
+  const lastFocusedElementRef = useRef<HTMLElement | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -23,13 +25,50 @@ const HeaderSmall = () => {
   useEffect(() => {
     if (!menuOpen) {
       document.body.style.overflow = '';
+      if (lastFocusedElementRef.current) {
+        lastFocusedElementRef.current.focus();
+        lastFocusedElementRef.current = null;
+      }
       return;
     }
 
     document.body.style.overflow = 'hidden';
+    lastFocusedElementRef.current =
+      document.activeElement as HTMLElement | null;
+    const focusables = menuPanelRef.current?.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])',
+    );
+    focusables?.[0]?.focus();
+
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setMenuOpen(false);
+        return;
+      }
+
+      if (event.key !== 'Tab' || !menuPanelRef.current) {
+        return;
+      }
+
+      const elements = Array.from(
+        menuPanelRef.current.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])',
+        ),
+      ).filter((el) => !el.hasAttribute('disabled'));
+
+      if (elements.length === 0) {
+        return;
+      }
+
+      const first = elements[0];
+      const last = elements[elements.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
       }
     };
 
@@ -126,6 +165,10 @@ const HeaderSmall = () => {
 
           <nav
             id="primary-nav"
+            ref={menuPanelRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Primary navigation menu"
             className="absolute right-0 top-0 h-full w-[min(90vw,22rem)] bg-white shadow-2xl border-l border-[#2D3A3A]/15 p-6"
           >
             <div className="flex items-center justify-between border-b border-[#2D3A3A]/15 pb-4">

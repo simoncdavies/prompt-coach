@@ -25,9 +25,9 @@
   - Implemented: `consumeQuota` now uses RPC-only consumption (no non-transactional write fallback path)
 - [x] 7. Server-side enforcement as source of truth
 - [x] 8. Client affordances (quota messaging, auth-required hint, search page pagination + only-my-prompts)
-- [ ] 9. Navigation/accessibility polish
+- [x] 9. Navigation/accessibility polish
   - Implemented: global burger menu, auth-aware items, overlay drawer, keyboard close via `Escape`, aria labels
-  - Remaining: formal focus trap/focus-return management
+  - Implemented: formal focus trap within menu drawer and focus-return on close
 - [x] 10. Analytics/auditing hooks (attempt logging + auth-conversion tracking events)
 - [ ] 11. Testing plan execution
   - [x] Unit tests (Vitest) in place for core `lib/` logic
