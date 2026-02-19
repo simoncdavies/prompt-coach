@@ -20,9 +20,9 @@
   - Includes consistent modal gating for both enhancer usage and prompt-detail viewing
 - [x] 4. Enhancer/read/search flow inventory reflected in implementation (`prompt_runs.user_id` used for ownership/search)
 - [x] 5. Auth UX implemented (auth page/modal, return flow, draft preservation, logout)
-- [ ] 6. Monthly usage limit hardening
+- [x] 6. Monthly usage limit hardening
   - Implemented: usage tables/functions, UTC cycle logic, server checks, blocked messaging, plan table
-  - Remaining: fallback path in `lib/server/quota.ts` is a resilience safety net and is not fully transactional like the RPC lock path
+  - Implemented: `consumeQuota` now uses RPC-only consumption (no non-transactional write fallback path)
 - [x] 7. Server-side enforcement as source of truth
 - [x] 8. Client affordances (quota messaging, auth-required hint, search page pagination + only-my-prompts)
 - [ ] 9. Navigation/accessibility polish

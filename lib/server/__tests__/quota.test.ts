@@ -109,14 +109,10 @@ describe('quota helpers', () => {
     expect(result.reset_at).toMatch(/T00:00:00.000Z$/);
   });
 
-  it('falls back in consumeQuota and records attempt', async () => {
+  it('throws when rpc fails in consumeQuota', async () => {
     rpc.mockResolvedValue({ data: null, error: new Error('rpc unavailable') });
-    mockFallbackQueries({ used: 1, limit: 3, isUnlimited: false });
-
-    const result = await consumeQuota('user-1', { source: 'test' });
-
-    expect(result.allowed).toBe(true);
-    expect(from).toHaveBeenCalledWith('prompt_enhancer_attempts');
-    expect(from).toHaveBeenCalledWith('prompt_enhancer_usage');
+    await expect(consumeQuota('user-1', { source: 'test' })).rejects.toThrow(
+      'rpc unavailable',
+    );
   });
 });

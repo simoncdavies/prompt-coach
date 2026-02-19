@@ -154,30 +154,7 @@ export async function consumeQuota(
   });
 
   if (error) {
-    const status = await getQuotaStatusFallback(userId);
-    const allowed = status.allowed;
-
-    if (allowed) {
-      const { cycleStart } = getCycleBoundsFromSignup(
-        (await supabaseServer.auth.admin.getUserById(userId)).data.user
-          ?.created_at ?? new Date().toISOString(),
-      );
-      const { error: insertError } = await supabaseServer
-        .from('prompt_enhancer_usage')
-        .insert({ user_id: userId, cycle_start: cycleStart });
-      if (insertError) {
-        throw new Error(insertError.message);
-      }
-    }
-
-    await supabaseServer.from('prompt_enhancer_attempts').insert({
-      user_id: userId,
-      allowed,
-      reason: allowed ? 'ok_fallback' : 'quota_exceeded_fallback',
-      metadata,
-    });
-
-    return getQuotaStatusFallback(userId);
+    throw new Error(error.message);
   }
 
   return normalizeQuotaPayload(data);
