@@ -3,8 +3,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { PromptMetadata } from '@/lib/types'; // Assuming types structure
 import { formatDateUTC } from '@/lib/utils';
-import { Badge } from './ui/Badge';
-import { Card, CardContent, CardHeader } from './ui/Card';
+import { Badge } from '../ui/Badge';
+import { Card, CardContent, CardHeader } from '../ui/Card';
 
 interface RecentRun {
   id: string;

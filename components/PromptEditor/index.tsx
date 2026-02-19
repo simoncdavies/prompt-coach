@@ -9,8 +9,8 @@ import {
   TARGET_MODELS,
   VERBOSITY_LEVELS,
 } from '@/lib/types';
-import { Button } from './ui/Button';
-import { Card, CardContent } from './ui/Card';
+import { Button } from '../ui/Button';
+import { Card, CardContent } from '../ui/Card';
 
 interface PromptEditorProps {
   onSubmit: (data: RunAnalysisRequest) => void;

@@ -5,8 +5,8 @@ import { useState } from 'react';
 import { AnalyticsEvent, trackEvent } from '@/lib/analytics';
 import type { RewriterResult } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { Button } from './ui/Button';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/Card';
+import { Button } from '../ui/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/Card';
 
 export function RewriteBox({ result }: { result: RewriterResult }) {
   const [activeTab, setActiveTab] = useState<'improved' | 'minimal'>(

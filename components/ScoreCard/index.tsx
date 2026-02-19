@@ -3,7 +3,7 @@ import { useState } from 'react';
 import type { z } from 'zod';
 import type { AnalyzerResult, IssueSchema } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/Card';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/Card';
 
 type Issue = z.infer<typeof IssueSchema>;
 

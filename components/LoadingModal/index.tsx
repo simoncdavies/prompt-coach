@@ -1,6 +1,6 @@
 'use client';
 
-import { LetterGlitch } from './LetterGlitch';
+import { LetterGlitch } from '../LetterGlitch';
 
 interface LoadingModalProps {
   message?: string;

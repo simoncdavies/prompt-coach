@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { AnalyticsEvent, trackEvent } from '@/lib/analytics';
 import { onAuthChange, signOut } from '@/lib/auth/client';
-import { LetterGlitch } from './LetterGlitch';
+import { LetterGlitch } from '../LetterGlitch';
 
 const HeaderSmall = () => {
   const [menuOpen, setMenuOpen] = useState(false);

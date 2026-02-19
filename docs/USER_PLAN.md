@@ -30,6 +30,10 @@
   - Remaining: formal focus trap/focus-return management
 - [x] 10. Analytics/auditing hooks (attempt logging + auth-conversion tracking events)
 - [ ] 11. Testing plan execution
+  - [x] Unit tests (Vitest) in place for core `lib/` logic
+  - [ ] Component tests (`@testing-library/react` + Vitest) in place for UI behavior
+    - Current state: minimal coverage only (`components/ui/Button.test.tsx`)
+  - [ ] E2E tests (Playwright) for critical auth/enhancer/search flows
   - Remaining: add automated tests/integration tests for quota cycles, auth gates, search pagination/filtering, and nav behavior
   - Agreed stack: `Vitest` (unit/server), `@testing-library/react` (component behavior), `Playwright` (critical E2E user flows)
 - [ ] 12. Monetization completion
@@ -45,12 +49,11 @@
 - [ ] 13. Rollout completion
   - Implemented: migrations for existing users and access model
   - Remaining: release note/tooltip communication
-- [ ] 14. Tooling: adopt BiomeJS
-  - [ ] Add BiomeJS dependency and config (`biome.json`)
-  - [ ] Add scripts for check/format in `package.json`
-  - [ ] Decide coexistence/migration path from current ESLint setup
-  - [ ] Run BiomeJS and fix or suppress baseline issues
-  - [ ] Add CI step for BiomeJS checks
+- [x] 14. Tooling: adopt BiomeJS
+  - [x] Add BiomeJS dependency and config (`biome.json`)
+  - [x] Add scripts for check/format in `package.json`
+  - [x] Decide coexistence/migration path from current ESLint setup
+  - [x] Run BiomeJS and fix or suppress baseline issues
 - [ ] 15. Expand beyond coding prompts (category selector)
   - [ ] Add `category` to prompt metadata schema/types/API payloads
   - [ ] Add category selector UI in prompt editor (default: `coding`)

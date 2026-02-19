@@ -1,5 +1,5 @@
 import { HelpCircle } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/Card';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/Card';
 
 export function QuestionsList({ questions }: { questions: string[] }) {
   if (!questions || questions.length === 0) return null;
