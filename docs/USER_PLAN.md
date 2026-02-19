@@ -40,9 +40,12 @@
   - Implemented: free tier limit, blocked-state upsell copy, `user_plans` data model
   - Remaining: billing flow/provider integration and pricing/account screens
   - Google Ads pilot checklist:
-    - [ ] Enable ads for signed-out users only (phase 1)
-    - [ ] Keep signed-in enhancer/results experience ad-free
-    - [ ] Keep paid plans ad-free
+    - [ ] Keep GA-only setup for phase 1 (no GTM dependency yet)
+    - [ ] Add AdSense integration (`<head>` script + `public/ads.txt`)
+    - [ ] Gate GA + AdSense on cookie consent acceptance (do not load before consent)
+    - [ ] Enable ads for free users (signed-out and signed-in)
+    - [ ] Keep signed-in paid-plan enhancer/results experience ad-free
+    - [ ] Add explicit paid/free flag in usage payload for deterministic ad gating
     - [ ] Add ad placements away from prompt input/results content
     - [ ] Track ad impressions/clicks + impact on signup/upgrade conversion
     - [ ] Review metrics and decide expand/reduce/remove
@@ -148,6 +151,11 @@
 12. **Monetization and upsell (design + data hooks)**
     - Define free tier as 5 enhancements/month.
     - Provisional paid tiers: £10 for 200 enhancements/month; £20 for 500 enhancements/month.
+    - Phase 1 analytics stack remains GA-only; GTM is optional later.
+    - Integrate AdSense directly in app code (global script + `ads.txt` + controlled slot components).
+    - Ensure non-essential tracking/ad scripts are consent-gated (only after user accepts in cookie banner).
+    - Ad visibility rule: show ads to signed-out users and signed-in free users; keep paid plans ad-free.
+    - Add a deterministic server-backed paid/free indicator in usage/account payloads for ad gating.
     - Decide on purchase flow and billing provider (Stripe recommended if not already).
     - Add upsell entry points:
      - When user hits 5/5 quota (blocked state).
