@@ -1,6 +1,6 @@
 'use client';
 
-import { FaInstagram, FaLinkedin } from 'react-icons/fa6';
+import { FaInstagram, FaLinkedin, FaXTwitter } from 'react-icons/fa6';
 import { AnalyticsEvent, trackEvent } from '@/lib/analytics';
 
 function trackFooterLinkClick(href: string, label: string) {
@@ -82,6 +82,18 @@ export function Footer() {
                 }
               >
                 <FaLinkedin className="w-6 h-6 group-hover:scale-110 transition-transform text-off-white/80 group-hover:text-bright-green" />
+              </a>
+              <a
+                href="https://www.x.com/dvlprltd"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group p-3 rounded-xl bg-off-white/5 border border-off-white/10 text-off-white hover:border-bright-green/50 hover:bg-bright-green/5 transition-all duration-300"
+                aria-label="Visit DVLPR on X"
+                onClick={() =>
+                  trackFooterLinkClick('https://www.x.com/dvlprltd', 'x')
+                }
+              >
+                <FaXTwitter className="w-6 h-6 group-hover:scale-110 transition-transform text-off-white/80 group-hover:text-bright-green" />
               </a>
               <a
                 href="https://www.instagram.com/dvlpr.ltd/"
