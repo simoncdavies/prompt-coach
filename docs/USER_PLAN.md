@@ -29,42 +29,17 @@
   - Implemented: global burger menu, auth-aware items, overlay drawer, keyboard close via `Escape`, aria labels
   - Implemented: formal focus trap within menu drawer and focus-return on close
 - [x] 10. Analytics/auditing hooks (attempt logging + auth-conversion tracking events)
-- [ ] 11. Testing plan execution
-  - [x] Unit tests (Vitest) in place for core `lib/` logic
-  - [ ] Component tests (`@testing-library/react` + Vitest) in place for UI behavior
-    - Current state: minimal coverage only (`components/ui/Button.test.tsx`)
-  - [ ] E2E tests (Playwright) for critical auth/enhancer/search flows
-  - Remaining: add automated tests/integration tests for quota cycles, auth gates, search pagination/filtering, and nav behavior
-  - Agreed stack: `Vitest` (unit/server), `@testing-library/react` (component behavior), `Playwright` (critical E2E user flows)
-- [ ] 12. Monetization completion
+- [ ] 11. Monetization completion
   - Implemented: free tier limit, blocked-state upsell copy, `user_plans` data model
   - Remaining: billing flow/provider integration and pricing/account screens
-  - Google Ads pilot checklist:
-    - [ ] Keep GA-only setup for phase 1 (no GTM dependency yet)
-    - [ ] Add AdSense integration (`<head>` script + `public/ads.txt`)
-    - [ ] Gate GA + AdSense on cookie consent acceptance (do not load before consent)
-    - [ ] Enable ads for free users (signed-out and signed-in)
-    - [ ] Keep signed-in paid-plan enhancer/results experience ad-free
-    - [ ] Add explicit paid/free flag in usage payload for deterministic ad gating
-    - [ ] Add ad placements away from prompt input/results content
-    - [ ] Track ad impressions/clicks + impact on signup/upgrade conversion
-    - [ ] Review metrics and decide expand/reduce/remove
-- [ ] 13. Rollout completion
+- [ ] 12. Rollout completion
   - Implemented: migrations for existing users and access model
   - Remaining: release note/tooltip communication
-- [x] 14. Tooling: adopt BiomeJS
+- [x] 13. Tooling: adopt BiomeJS
   - [x] Add BiomeJS dependency and config (`biome.json`)
   - [x] Add scripts for check/format in `package.json`
   - [x] Decide coexistence/migration path from current ESLint setup
   - [x] Run BiomeJS and fix or suppress baseline issues
-- [ ] 15. Expand beyond coding prompts (category selector)
-  - [ ] Add `category` to prompt metadata schema/types/API payloads
-  - [ ] Add category selector UI in prompt editor (default: `coding`)
-  - [ ] Add category-specific analyzer/rewriter system prompt templates
-  - [ ] Keep shared core rubric + category-specific evaluation criteria
-  - [ ] Persist category in `prompt_runs.metadata` for analytics/search
-  - [ ] Keep auth/quota behavior unchanged across categories for phase 1
-  - [ ] Add tests for category routing + default fallback behavior
 
 ## Plan
 1. **Priority first step: auth + 5/month enforcement**
@@ -134,28 +109,9 @@
    - Log enhancement attempts (allowed/blocked) for visibility.
    - Track conversion: unauthenticated users who register after hitting enhancer gate.
 
-11. **Testing plan**
-   - Unauthenticated user can view recent prompts list, but cannot open full prompt details.
-   - Unauthenticated recent prompt list is capped at 20.
-   - Unauthenticated user is blocked from enhancer and prompted to log in/register.
-   - Authenticated user can use enhancer up to 5 times per month.
-   - 6th attempt in the same month is blocked with a clear message.
-   - Usage resets on each user's monthly signup anniversary date.
-   - Authenticated user can access dedicated search and retrieve beyond the 20-item recent cap.
-   - Search page pagination returns 20 items per batch and supports loading additional pages.
-   - "Only my prompts" checkbox correctly limits results to the signed-in user's prompts.
-   - Burger menu icon is visible on all pages and all viewport sizes.
-   - Burger menu opens/closes correctly via mouse, touch, and keyboard.
-   - Menu items switch correctly by auth state (Search/Login/Register/Account/Logout).
-
-12. **Monetization and upsell (design + data hooks)**
+11. **Monetization and upsell (design + data hooks)**
     - Define free tier as 5 enhancements/month.
     - Provisional paid tiers: £10 for 200 enhancements/month; £20 for 500 enhancements/month.
-    - Phase 1 analytics stack remains GA-only; GTM is optional later.
-    - Integrate AdSense directly in app code (global script + `ads.txt` + controlled slot components).
-    - Ensure non-essential tracking/ad scripts are consent-gated (only after user accepts in cookie banner).
-    - Ad visibility rule: show ads to signed-out users and signed-in free users; keep paid plans ad-free.
-    - Add a deterministic server-backed paid/free indicator in usage/account payloads for ad gating.
     - Decide on purchase flow and billing provider (Stripe recommended if not already).
     - Add upsell entry points:
      - When user hits 5/5 quota (blocked state).
@@ -164,7 +120,7 @@
     - Track conversion and drop-offs on the quota-block screen.
     - Support “power users” who are unrestricted (e.g., admin flag or allowlist).
 
-13. **Rollout considerations**
+12. **Rollout considerations**
    - Migrate existing users with no changes to their access except limit enforcement.
    - Add a short release note or tooltip explaining the new monthly limit.
 

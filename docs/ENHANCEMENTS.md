@@ -74,3 +74,12 @@
 - Add PR checklist mapped to roadmap items.
 - Add migration validation checklist (RLS, grants, smoke queries).
 - Add CI quality gates (`lint`, tests, migration checks).
+
+## Expand beyond coding prompts (category selector)
+- Add `category` to prompt metadata schema/types/API payloads
+- Add category selector UI in prompt editor (default: `coding`)
+- Add category-specific analyzer/rewriter system prompt templates
+- Keep shared core rubric + category-specific evaluation criteria
+- Persist category in `prompt_runs.metadata` for analytics/search
+- Keep auth/quota behavior unchanged across categories for phase 1
+- Add tests for category routing + default fallback behavior
