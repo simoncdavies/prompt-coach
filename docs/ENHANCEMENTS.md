@@ -9,6 +9,15 @@
 - Add filters: “Originals only,” “My forks,” “Most forked.”
 
 ## UX & Creation Flow
+- Add output modes:
+  - `Quick`: Generate an enhanced prompt (current lightweight flow).
+  - `Build`: Generate a PRD, with optional task list derived from that PRD.
+- Monetization fit:
+  - Keep `Quick` as baseline/free and gate advanced `Build` options (full PRD depth, auto task breakdown, export formats) behind paid tiers.
+- In `Build` mode, structure output as:
+  - PRD (problem, users, goals, scope, constraints, acceptance criteria).
+  - Task list (epics/tasks with priority and dependencies).
+  - Optional prompt pack generated from PRD sections (build/design/test prompts).
 - Add a “Platform” selector (Web, iOS, Android, Desktop, API, Marketing, Support).
 - Add “Output type” selector (JSON, bullets, email, code, checklist, spec).
 - Add “Tone + expertise” controls (terse vs detailed; novice vs expert).
