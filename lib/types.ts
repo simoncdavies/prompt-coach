@@ -3,12 +3,16 @@ import { z } from 'zod';
 // --- Shared Options ---
 
 export const TARGET_MODELS = ['OpenAI', 'Claude', 'Gemini'] as const;
-export const OUTPUT_STYLES = ['diff', 'full files', 'plan + code + tests'] as const;
+export const OUTPUT_STYLES = [
+  'diff',
+  'full files',
+  'plan + code + tests',
+] as const;
 export const VERBOSITY_LEVELS = ['concise', 'normal', 'thorough'] as const;
 
-export type TargetModel = typeof TARGET_MODELS[number];
-export type OutputStyle = typeof OUTPUT_STYLES[number];
-export type VerbosityLevel = typeof VERBOSITY_LEVELS[number];
+export type TargetModel = (typeof TARGET_MODELS)[number];
+export type OutputStyle = (typeof OUTPUT_STYLES)[number];
+export type VerbosityLevel = (typeof VERBOSITY_LEVELS)[number];
 
 export const PromptMetadataSchema = z.object({
   targetModel: z.enum(TARGET_MODELS),
@@ -21,7 +25,7 @@ export type PromptMetadata = z.infer<typeof PromptMetadataSchema>;
 // --- API Request Schema ---
 
 export const RunAnalysisSchema = z.object({
-  prompt: z.string().min(10, "Prompt is too short"),
+  prompt: z.string().min(10, 'Prompt is too short'),
   metadata: PromptMetadataSchema,
   save: z.boolean().default(false),
   isPublic: z.boolean().default(false),

@@ -9,6 +9,15 @@
 - Add filters: “Originals only,” “My forks,” “Most forked.”
 
 ## UX & Creation Flow
+- Add output modes:
+  - `Quick`: Generate an enhanced prompt (current lightweight flow).
+  - `Build`: Generate a PRD, with optional task list derived from that PRD.
+- Monetization fit:
+  - Keep `Quick` as baseline/free and gate advanced `Build` options (full PRD depth, auto task breakdown, export formats) behind paid tiers.
+- In `Build` mode, structure output as:
+  - PRD (problem, users, goals, scope, constraints, acceptance criteria).
+  - Task list (epics/tasks with priority and dependencies).
+  - Optional prompt pack generated from PRD sections (build/design/test prompts).
 - Add a “Platform” selector (Web, iOS, Android, Desktop, API, Marketing, Support).
 - Add “Output type” selector (JSON, bullets, email, code, checklist, spec).
 - Add “Tone + expertise” controls (terse vs detailed; novice vs expert).
@@ -65,3 +74,12 @@
 - Add PR checklist mapped to roadmap items.
 - Add migration validation checklist (RLS, grants, smoke queries).
 - Add CI quality gates (`lint`, tests, migration checks).
+
+## Expand beyond coding prompts (category selector)
+- Add `category` to prompt metadata schema/types/API payloads
+- Add category selector UI in prompt editor (default: `coding`)
+- Add category-specific analyzer/rewriter system prompt templates
+- Keep shared core rubric + category-specific evaluation criteria
+- Persist category in `prompt_runs.metadata` for analytics/search
+- Keep auth/quota behavior unchanged across categories for phase 1
+- Add tests for category routing + default fallback behavior

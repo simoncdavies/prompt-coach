@@ -1,47 +1,74 @@
-"use client";
+'use client';
 
-import { FormEvent, Suspense, useMemo, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { HeaderSmall } from "@/components/HeaderSmall";
-import { Footer } from "@/components/Footer";
-import { Card, CardContent } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
-import { signInWithPassword, signUp } from "@/lib/auth/client";
+import { useRouter, useSearchParams } from 'next/navigation';
+import { type FormEvent, Suspense, useMemo, useState } from 'react';
+import { Footer } from '@/components/Footer';
+import { HeaderSmall } from '@/components/HeaderSmall';
+import { Button } from '@/components/ui/Button';
+import { Card, CardContent } from '@/components/ui/Card';
+import { AnalyticsEvent, trackEvent } from '@/lib/analytics';
+import {
+  type AuthActionResult,
+  signInWithPassword,
+  signUp,
+} from '@/lib/auth/client';
 
 function AuthPageContent() {
   const router = useRouter();
   const params = useSearchParams();
-  const returnTo = useMemo(() => params.get("returnTo") || "/", [params]);
-  const [mode, setMode] = useState<"login" | "register">("login");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const returnTo = useMemo(() => params.get('returnTo') || '/', [params]);
+  const [mode, setMode] = useState<'login' | 'register'>('login');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
+    const modeAtSubmit = mode;
+    trackEvent(
+      modeAtSubmit === 'register'
+        ? AnalyticsEvent.AuthCreateAccountSubmit
+        : AnalyticsEvent.AuthSignInSubmit,
+      { source: 'auth_page' },
+    );
     setLoading(true);
     setError(null);
     setMessage(null);
     try {
-      let result;
-      if (mode === "register") {
-        result = await signUp(email, password);
-      } else {
-        result = await signInWithPassword(email, password);
-      }
+      const result: AuthActionResult =
+        modeAtSubmit === 'register'
+          ? await signUp(email, password)
+          : await signInWithPassword(email, password);
 
       if (result.needsEmailConfirmation) {
-        setMessage(`Account created for ${result.email}. Please check your email to confirm your account before logging in.`);
-        setMode("login");
-        setPassword("");
+        setMessage(
+          `Account created for ${result.email}. Check your inbox to confirm your email, then sign in.`,
+        );
+        setMode('login');
+        setPassword('');
         return;
       }
 
+      trackEvent(
+        modeAtSubmit === 'register'
+          ? AnalyticsEvent.AuthCreateAccountSuccess
+          : AnalyticsEvent.AuthSignInSuccess,
+        { source: 'auth_page' },
+      );
       router.push(returnTo);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Authentication failed";
+      const message = err instanceof Error ? err.message : 'Sign in failed';
+      trackEvent(
+        modeAtSubmit === 'register'
+          ? AnalyticsEvent.AuthCreateAccountFailed
+          : AnalyticsEvent.AuthSignInFailed,
+        {
+          source: 'auth_page',
+          error: message,
+        },
+      );
       setError(message);
     } finally {
       setLoading(false);
@@ -54,23 +81,28 @@ function AuthPageContent() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <Card className="max-w-md mx-auto">
           <CardContent className="p-6 space-y-4">
-            <h1 className="text-xl font-semibold text-[#040F0F]">Account</h1>
-            <p className="text-sm text-[#2D3A3A]">Login or register to use Prompt Coach enhancer features.</p>
+            <h1 className="text-xl font-semibold text-[#040F0F]">
+              Sign in to Prompt Coach
+            </h1>
+            <p className="text-sm text-[#2D3A3A]">
+              Create an account or sign in to improve, save, and revisit
+              prompts.
+            </p>
 
             <div className="flex gap-2">
               <button
                 type="button"
-                onClick={() => setMode("login")}
-                className={`px-3 py-2 text-sm rounded-md border ${mode === "login" ? "bg-[#2BA84A] text-white border-[#2BA84A]" : "border-[#2D3A3A]/20 text-[#2D3A3A]"}`}
+                onClick={() => setMode('login')}
+                className={`px-3 py-2 text-sm rounded-md border ${mode === 'login' ? 'bg-[#2BA84A] text-white border-[#2BA84A]' : 'border-[#2D3A3A]/20 text-[#2D3A3A]'}`}
               >
-                Login
+                Sign in
               </button>
               <button
                 type="button"
-                onClick={() => setMode("register")}
-                className={`px-3 py-2 text-sm rounded-md border ${mode === "register" ? "bg-[#2BA84A] text-white border-[#2BA84A]" : "border-[#2D3A3A]/20 text-[#2D3A3A]"}`}
+                onClick={() => setMode('register')}
+                className={`px-3 py-2 text-sm rounded-md border ${mode === 'register' ? 'bg-[#2BA84A] text-white border-[#2BA84A]' : 'border-[#2D3A3A]/20 text-[#2D3A3A]'}`}
               >
-                Register
+                Create account
               </button>
             </div>
 
@@ -78,7 +110,7 @@ function AuthPageContent() {
               <input
                 type="email"
                 required
-                placeholder="Email"
+                placeholder="Email address"
                 className="w-full rounded-md border border-[#2D3A3A]/30 p-2 text-sm"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -87,7 +119,7 @@ function AuthPageContent() {
                 type="password"
                 required
                 minLength={6}
-                placeholder="Password"
+                placeholder="Password (6+ characters)"
                 className="w-full rounded-md border border-[#2D3A3A]/30 p-2 text-sm"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -97,7 +129,7 @@ function AuthPageContent() {
               {message && <p className="text-sm text-[#248232]">{message}</p>}
 
               <Button type="submit" className="w-full" isLoading={loading}>
-                {mode === "login" ? "Login" : "Create account"}
+                {mode === 'login' ? 'Sign in' : 'Create account'}
               </Button>
             </form>
           </CardContent>
